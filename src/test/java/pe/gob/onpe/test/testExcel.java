@@ -1,0 +1,38 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package pe.gob.onpe.test;
+
+import java.io.FileInputStream;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import pe.gob.onpe.claridadui.enums.FormatoEnum;
+import pe.gob.onpe.claridadui.service.iface.IExcelXSSFValidatorService;
+import pe.gob.onpe.claridadui.service.iface.IFactoryService;
+import pe.gob.onpe.claridadui.service.impl.FactoryService;
+
+/**
+ *
+ * @author bvaldez
+ */
+public class testExcel {
+
+    public static final String PATH = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
+    
+    public static void main(String[] args) {
+        try {
+            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH));
+            int tipoFormato = FormatoEnum.FORMATO_5.getId();
+            IFactoryService factory = new FactoryService();
+            IExcelXSSFValidatorService excelValidator = factory.validateExcelXSSF(file, tipoFormato);
+            
+            String responseJson = excelValidator.validate();
+            System.out.println(responseJson);
+            
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+       
+}
