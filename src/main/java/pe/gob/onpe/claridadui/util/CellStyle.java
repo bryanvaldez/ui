@@ -19,13 +19,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class CellStyle {
     
     public XSSFColor COLOR_CELL_ENUM = new XSSFColor(new java.awt.Color(215, 210, 183));    
+    public XSSFColor YELLOW_CELL = new XSSFColor(new java.awt.Color(255, 255, 0)); 
     
     public XSSFCellStyle styleCellAmountTotal(XSSFWorkbook wb) {
         XSSFCellStyle style = wb.createCellStyle();
         style.setFont(getfontTotal(wb));
         style.setDataFormat(wb.createDataFormat().getFormat("0.00"));
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        style.setFillForegroundColor(COLOR_CELL_ENUM);
+        style.setFillForegroundColor(YELLOW_CELL);
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return style;
     }    

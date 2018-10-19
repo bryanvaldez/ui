@@ -5,6 +5,7 @@
  */
 package pe.gob.onpe.test;
 
+import java.io.File;
 import java.io.FileInputStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.gob.onpe.claridadui.enums.FormatoEnum;
@@ -19,11 +20,11 @@ import pe.gob.onpe.claridadui.service.impl.FactoryService;
 public class testExcel {
 
     public static final String PATH = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
-    public static final String PATH_ERROR = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
-    
+        
     public static void main(String[] args) {
         try {
-            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH));
+            String path = testExcel.class.getResource("/Formato_5.xlsx").toURI().getPath();            
+            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(path));
             int tipoFormato = FormatoEnum.FORMATO_5.getId();
             IFactoryService factory = new FactoryService();
             IExcelXSSFValidatorService excelValidator = factory.validateExcelXSSF(file, tipoFormato);
