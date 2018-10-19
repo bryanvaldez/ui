@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pe.gob.onpe.claridadui.Constants;
+package pe.gob.onpe.claridadui.enums;
 
 /**
  *
  * @author bvaldez
  */
-public class Validaciones {
-    
-    public static final int FORMAT_REQUIRED = 1;  
-    
-    public static final String V_AMOUNT = "^\\d+(\\.\\d{1,2})?$";     
+public class HojaEnum {
     
 }

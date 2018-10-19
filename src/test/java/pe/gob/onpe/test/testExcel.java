@@ -19,6 +19,7 @@ import pe.gob.onpe.claridadui.service.impl.FactoryService;
 public class testExcel {
 
     public static final String PATH = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
+    public static final String PATH_ERROR = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
     
     public static void main(String[] args) {
         try {

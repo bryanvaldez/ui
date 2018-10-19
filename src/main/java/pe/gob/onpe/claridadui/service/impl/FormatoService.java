@@ -149,78 +149,79 @@ public class FormatoService implements IFormatoService {
     }
     
     private List<DetalleFormato> getIncomeDetail(int type){
-        List<DetalleFormato> response = new ArrayList<>();
+        List<DetalleFormato> response;
         response = getIncomeDetailSheetOne(type);
         return response;    
     }
     
     private List<DetalleFormato> getIncomeDetailSheetOne(int type){
         List<DetalleFormato> response = new ArrayList<>();
-                
-        //Escritura
-        DetalleFormato detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(1);
-        detalle.setFilaExcel(2);
-        detalle.setNombreColumna("Simbolo");
-        detalle.setType(1);
-        response.add(detalle); 
+        DetalleFormato detalle;   
         
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(2);
-        detalle.setFilaExcel(5);
-        detalle.setNombreColumna("Período");
-        detalle.setType(1);
-        response.add(detalle);       
-        
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(4);
-        detalle.setFilaExcel(19);
-        detalle.setNombreColumna("nombreContador");
-        detalle.setType(1);
-        response.add(detalle);    
-        
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(4);
-        detalle.setFilaExcel(20);
-        detalle.setNombreColumna("dniContador");
-        detalle.setType(1);
-        response.add(detalle);         
-        
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(4);
-        detalle.setFilaExcel(21);
-        detalle.setNombreColumna("matriculaContador");
-        detalle.setType(1);
-        response.add(detalle); 
-        
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(4);
-        detalle.setFilaExcel(22);
-        detalle.setNombreColumna("colegioContador");
-        detalle.setType(1);
-        response.add(detalle);         
-                        
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(7);
-        detalle.setFilaExcel(19);
-        detalle.setNombreColumna("nombreTesorero");
-        detalle.setType(1);
-        response.add(detalle);        
-
-        detalle = new DetalleFormato();        
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(7);
-        detalle.setFilaExcel(20);
-        detalle.setNombreColumna("dniTesorero");
-        detalle.setType(1);
-        response.add(detalle);         
+        //Escritura  
+//        detalle = new DetalleFormato();
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(1);
+//        detalle.setFilaExcel(2);
+//        detalle.setNombreColumna("Simbolo");
+//        detalle.setType(1);
+//        response.add(detalle); 
+//        
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(2);
+//        detalle.setFilaExcel(5);
+//        detalle.setNombreColumna("Período");
+//        detalle.setType(1);
+//        response.add(detalle);       
+//        
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(4);
+//        detalle.setFilaExcel(19);
+//        detalle.setNombreColumna("nombreContador");
+//        detalle.setType(1);
+//        response.add(detalle);    
+//        
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(4);
+//        detalle.setFilaExcel(20);
+//        detalle.setNombreColumna("dniContador");
+//        detalle.setType(1);
+//        response.add(detalle);         
+//        
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(4);
+//        detalle.setFilaExcel(21);
+//        detalle.setNombreColumna("matriculaContador");
+//        detalle.setType(1);
+//        response.add(detalle); 
+//        
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(4);
+//        detalle.setFilaExcel(22);
+//        detalle.setNombreColumna("colegioContador");
+//        detalle.setType(1);
+//        response.add(detalle);         
+//                        
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(7);
+//        detalle.setFilaExcel(19);
+//        detalle.setNombreColumna("nombreTesorero");
+//        detalle.setType(1);
+//        response.add(detalle);        
+//
+//        detalle = new DetalleFormato();        
+//        detalle.setHojaExcel(1);
+//        detalle.setColumnaExcel(7);
+//        detalle.setFilaExcel(20);
+//        detalle.setNombreColumna("dniTesorero");
+//        detalle.setType(1);
+//        response.add(detalle);         
                                   
         //Lectura
         detalle = new DetalleFormato();        
