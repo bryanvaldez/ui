@@ -23,7 +23,7 @@ public class testExcel {
         
     public static void main(String[] args) {
         try {
-            String path = testExcel.class.getResource("/Formato_5.xlsx").toURI().getPath();            
+            String path = testExcel.class.getResource("/formatos/Formato_5.xlsx").toURI().getPath();            
             XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(path));
             int tipoFormato = FormatoEnum.FORMATO_5.getId();
             IFactoryService factory = new FactoryService();
