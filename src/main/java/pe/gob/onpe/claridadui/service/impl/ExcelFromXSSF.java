@@ -10,12 +10,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.Iterator;
-import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.gob.onpe.claridadui.Constants.Mensajes;
+import pe.gob.onpe.claridadui.Constants.Validaciones;
 import pe.gob.onpe.claridadui.model.DetalleFormato;
 import pe.gob.onpe.claridadui.model.Formato;
 import pe.gob.onpe.claridadui.service.iface.IExcelXSSFValidatorService;
@@ -69,45 +69,46 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         JsonObject jSheet4;
                                
         JsonArray formatSheets = new JsonParser().parse(formato.getDetalleHoja()).getAsJsonArray(); 
-
-        for (int i = 0; i < formatSheets.size(); i++) {
-            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();         
-            int sheet = formatSheet.get("hoja").getAsInt();
-            switch(sheet){
-                case 1:
-                    jSheet1 = getSheet1(formato, formatSheet);
+        for (int i = formatSheets.size()-1; i >=0 ; i--) {
+            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();  
+            int position = formatSheet.get("hoja").getAsInt()-1;
+            XSSFSheet sheet = workbook.getSheetAt(position);
+            JsonObject sheetParam = getSheetParam(sheet, formato, formatSheet);
+            switch(position){
+                case 0:
+                    jSheet1 = getSheet1(sheet, formato);
                     jResponse.add(jSheet1);
                     break;
-                case 2:
-                    jSheet2 = getSheet2(formato, formatSheet);
+                case 1:
+                    jSheet2 = getSheet2(formato, formatSheet, position);
                     jResponse.add(jSheet2);
                     break;
-                case 3:
-                    jSheet3 = getSheet3(formato, formatSheet);
+                case 2:
+                    jSheet3 = getSheet3(formato, formatSheet, position);
                     jResponse.add(jSheet3);
                     break;
-                case 4:
-                    jSheet4 = getSheet4(formato, formatSheet);
+                case 3:
+                    jSheet4 = getSheet4(sheet, formato, sheetParam);
                     jResponse.add(jSheet4);
                     break;                        
-            }
-        }
-        
+            }                        
+        }        
         return jResponse;
-    }
-    
-    
-    public JsonObject getSheet1(Formato formato, JsonObject formatSheet){
+    }    
+    public JsonObject getSheet4(XSSFSheet sheet, Formato formato, JsonObject sheetParam){
+        JsonObject jResponse = new JsonObject();
+        JsonObject data = new JsonObject();
+        boolean success = true;
+
+        return jResponse;
+    }         
+    public JsonObject getSheet1(XSSFSheet sheet, Formato formato){
         JsonObject jResponse = new JsonObject();
         JsonObject data = new JsonObject();
         boolean success = true;
         
-        int position = formatSheet.get("hoja").getAsInt()-1;
-        
-        XSSFSheet sheet = workbook.getSheetAt(position);
-        
         for (DetalleFormato parameter : formato.getDetalle()) {
-            if(parameter.getType() == 0){
+            if(parameter.getType() == Validaciones.FORMAT_READER){ 
                 Row rowParameter = sheet.getRow(parameter.getFilaExcel());
                 Cell cellParameter = rowParameter.getCell(parameter.getColumnaExcel());
                 String valueCell = getValueCell(cellParameter);
@@ -118,32 +119,91 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 }else{
                     System.out.println(valueCell);
                     invaliFormat = true;
-                }
-                
+                }                
             }
-        }
-                
+        }                
         jResponse.add("data", data);
         jResponse.addProperty("success", success);
         return jResponse;
-    }
-    
-    public JsonObject getSheet2(Formato formato, JsonObject formatSheet){
-        JsonObject jResponse = new JsonObject();
-        
-        return jResponse;
-    }
-
-    public JsonObject getSheet3(Formato formato, JsonObject formatSheet){
-        JsonObject jResponse = new JsonObject();
-        
-        return jResponse;
-    }
-
-    public JsonObject getSheet4(Formato formato, JsonObject formatSheet){
-        JsonObject jResponse = new JsonObject();
-        
-        return jResponse;
     }    
+    public JsonObject getSheet2(Formato formato, JsonObject formatSheet, int position){
+        JsonObject jResponse = new JsonObject();
+        
+        return jResponse;
+    }
+    public JsonObject getSheet3(Formato formato, JsonObject formatSheet, int position){
+        JsonObject jResponse = new JsonObject();
+        
+        return jResponse;
+    }   
+    
+    
+    private JsonObject getSheetParam(XSSFSheet sheet, Formato formato, JsonObject formatSheet){
+        JsonObject jResponse = new JsonObject();
+        JsonObject data = new JsonObject();
+        boolean success = true;
+        
+        Iterator<Row> rowIterator = sheet.iterator();
+        
+        String initTable = formatSheet.get("iniTabla").getAsString();
+        String subTotalTable = formatSheet.get("subtotal").getAsString();
+        String totalTable = formatSheet.get("total").getAsString();        
+        
+        int initRow = 0;
+        int finRow = 0;
+        int subtotalRow = 0;
+        int totalRow = 0;
+
+        boolean valve = true;
+        
+        if(!initTable.equalsIgnoreCase("")){
+            Row row;
+            while (rowIterator.hasNext()) {
+                row = rowIterator.next();
+                Iterator<Cell> cellIterator = row.cellIterator();
+                Cell celda;
+                if (valve) {
+                    while (cellIterator.hasNext()) {
+                        celda = cellIterator.next();
+                        String valueCell = getValueCell(celda).trim();
+                        
+                        if(valueCell.equalsIgnoreCase(initTable)){
+                            initRow = celda.getRow().getRowNum() + 1;                        
+                        }else{
+                            if(subTotalTable.equalsIgnoreCase("")){
+                                if (valueCell.equalsIgnoreCase(totalTable)){
+                                    finRow = celda.getRow().getRowNum() - 1;
+                                    subtotalRow = 0;
+                                    totalRow = celda.getRow().getRowNum();
+                                    valve = false;
+                                    break;
+                                }                                
+                            }else{
+                                if (valueCell.equalsIgnoreCase(subTotalTable)){
+                                    subtotalRow = celda.getRow().getRowNum();
+                                    finRow = celda.getRow().getRowNum() - 1;
+                                }else if(valueCell.equalsIgnoreCase(totalTable)){
+                                    totalRow = celda.getRow().getRowNum();
+                                    valve = false;
+                                    break;                                    
+                                }                                                              
+                            }                            
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }             
+        }else{
+            success = false;
+        }
+        
+        jResponse.addProperty("initRow", initRow);
+        jResponse.addProperty("finRow", finRow);
+        jResponse.addProperty("subtotalRow", subtotalRow);
+        jResponse.addProperty("totalRow", totalRow);
+        jResponse.addProperty("status", success);        
+        return jResponse;        
+    }
     
 }

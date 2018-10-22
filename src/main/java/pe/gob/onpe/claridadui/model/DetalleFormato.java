@@ -22,6 +22,23 @@ public class DetalleFormato {
     private int obligatorio;
     private int orden;
     private int type;
+
+    public DetalleFormato() {
+    }
+
+    public DetalleFormato(int hojaExcel, int columnaExcel, int filaExcel, String nombreColumna, String validacion, String mensajeValidacion, String comentario, int unico, int obligatorio, int orden, int type) {
+        this.hojaExcel = hojaExcel;
+        this.columnaExcel = columnaExcel;
+        this.filaExcel = filaExcel;
+        this.nombreColumna = nombreColumna;
+        this.validacion = validacion;
+        this.mensajeValidacion = mensajeValidacion;
+        this.comentario = comentario;
+        this.unico = unico;
+        this.obligatorio = obligatorio;
+        this.orden = orden;
+        this.type = type;
+    }
     
     public int getId() {
         return id;

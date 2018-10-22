@@ -43,14 +43,14 @@ public class ExcelValidator extends ExcelUtil{
 
         if (value.equalsIgnoreCase("")) {
             if (parameter.getObligatorio() == Validaciones.FORMAT_REQUIRED) {
-                cell.setCellStyle(styleCellAmountTotal(wb));
+                cell.setCellStyle(styleCellObservation(wb));
                 cell.setCellComment(getComentario(cell, messageEmptyError));
                 formatValidation = false;  
             }
         } else {
             if (regex != null && !regex.trim().isEmpty()) {
                 if (!value.matches(regex)) {
-                    cell.setCellStyle(styleCellAmountTotal(wb));
+                    cell.setCellStyle(styleCellObservation(wb));
                     cell.setCellComment(getComentario(cell, messageRegexError));
                     formatValidation = false;
                 }

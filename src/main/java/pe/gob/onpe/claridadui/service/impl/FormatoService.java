@@ -68,13 +68,28 @@ public class FormatoService implements IFormatoService {
             JsonObject hoja4 = new JsonObject();
 
             hoja1.addProperty("hoja", 1);
-            hoja1.addProperty("descripcion", "Formato-5");
+            hoja1.addProperty("descripcion", "Formato-5");            
+            hoja1.addProperty("iniTabla", "");
+            hoja1.addProperty("subtotal", "");
+            hoja1.addProperty("total", "");
+            
             hoja2.addProperty("hoja", 2);
             hoja2.addProperty("descripcion", "Anexo-5A");
+            hoja2.addProperty("iniTabla", "Apellido Paterno");
+            hoja2.addProperty("subtotal", "SUBTOTALES");
+            hoja2.addProperty("total", "TOTAL INGRESOS");            
+            
             hoja3.addProperty("hoja", 3);
             hoja3.addProperty("descripcion", "Anexo-5B");
+            hoja3.addProperty("iniTabla", "Fecha de la actividad");
+            hoja3.addProperty("subtotal", "");
+            hoja3.addProperty("total", "TOTAL INGRESOS");                  
+            
             hoja4.addProperty("hoja", 4);
             hoja4.addProperty("descripcion", "Anexo-5C");
+            hoja4.addProperty("iniTabla", "Fecha del ingreso");
+            hoja4.addProperty("subtotal", "");
+            hoja4.addProperty("total", "Total");                 
 
             jResponse.add(hoja1);
             jResponse.add(hoja2);
@@ -156,134 +171,24 @@ public class FormatoService implements IFormatoService {
     
     private List<DetalleFormato> getIncomeDetailSheetOne(int type){
         List<DetalleFormato> response = new ArrayList<>();
-        DetalleFormato detalle;   
         
-        //Escritura  
-//        detalle = new DetalleFormato();
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(1);
-//        detalle.setFilaExcel(2);
-//        detalle.setNombreColumna("Simbolo");
-//        detalle.setType(1);
-//        response.add(detalle); 
-//        
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(2);
-//        detalle.setFilaExcel(5);
-//        detalle.setNombreColumna("Período");
-//        detalle.setType(1);
-//        response.add(detalle);       
-//        
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(4);
-//        detalle.setFilaExcel(19);
-//        detalle.setNombreColumna("nombreContador");
-//        detalle.setType(1);
-//        response.add(detalle);    
-//        
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(4);
-//        detalle.setFilaExcel(20);
-//        detalle.setNombreColumna("dniContador");
-//        detalle.setType(1);
-//        response.add(detalle);         
-//        
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(4);
-//        detalle.setFilaExcel(21);
-//        detalle.setNombreColumna("matriculaContador");
-//        detalle.setType(1);
-//        response.add(detalle); 
-//        
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(4);
-//        detalle.setFilaExcel(22);
-//        detalle.setNombreColumna("colegioContador");
-//        detalle.setType(1);
-//        response.add(detalle);         
-//                        
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(7);
-//        detalle.setFilaExcel(19);
-//        detalle.setNombreColumna("nombreTesorero");
-//        detalle.setType(1);
-//        response.add(detalle);        
-//
-//        detalle = new DetalleFormato();        
-//        detalle.setHojaExcel(1);
-//        detalle.setColumnaExcel(7);
-//        detalle.setFilaExcel(20);
-//        detalle.setNombreColumna("dniTesorero");
-//        detalle.setType(1);
-//        response.add(detalle);         
-                                  
-        //Lectura
-        detalle = new DetalleFormato();        
-        detalle.setId(2);
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(8);
-        detalle.setFilaExcel(10);
-        detalle.setNombreColumna("5A");
-        detalle.setValidacion(Validaciones.V_AMOUNT);
-        detalle.setMensajeValidacion(Mensajes.M_INVALID_AMOUNT);
-        detalle.setComentario(Comentarios.C_INVALID_AMOUNT);
-        detalle.setUnico(0);
-        detalle.setObligatorio(1);
-        detalle.setOrden(1);
-        detalle.setType(0);
-        response.add(detalle);
+        //PARAMETROS DE LECTURA - FORMATO 5
+        response.add(new DetalleFormato(1, 8, 10, "5A", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 1, 0));
+        response.add(new DetalleFormato(1, 8, 11, "5B", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 2, 0));
+        response.add(new DetalleFormato(1, 8, 12, "5C", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 3, 0));
+        response.add(new DetalleFormato(1, 8, 13, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 4, 0));
         
-        detalle = new DetalleFormato();        
-        detalle.setId(3);
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(8);
-        detalle.setFilaExcel(11);
-        detalle.setNombreColumna("5B");
-        detalle.setValidacion(Validaciones.V_AMOUNT);
-        detalle.setMensajeValidacion(Mensajes.M_INVALID_AMOUNT);
-        detalle.setComentario(Comentarios.C_INVALID_AMOUNT);
-        detalle.setUnico(0);
-        detalle.setObligatorio(1);
-        detalle.setOrden(2);
-        detalle.setType(0);
-        response.add(detalle);      
-
-        detalle = new DetalleFormato();        
-        detalle.setId(4);
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(8);
-        detalle.setFilaExcel(12);
-        detalle.setNombreColumna("5C");
-        detalle.setValidacion(Validaciones.V_AMOUNT);
-        detalle.setMensajeValidacion(Mensajes.M_INVALID_AMOUNT);
-        detalle.setComentario(Comentarios.C_INVALID_AMOUNT);
-        detalle.setUnico(0);
-        detalle.setObligatorio(1);
-        detalle.setOrden(3);
-        detalle.setType(0);
-        response.add(detalle);     
+        //PARAMETROS DE LECTURA ANEXO 5C        
+        response.add(new DetalleFormato(4, 2, 10, "fecAporte", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0));
+        response.add(new DetalleFormato(4, 3, 10, "codAporte", Validaciones.TABLA3, Mensajes.INVALID_TABLA3, Comentarios.INVALID_TABLA3, 0, 1, 2, 0));
+        response.add(new DetalleFormato(4, 3, 10, "sustento", Validaciones.SUSTENTO, Mensajes.INVALID_SUSTENTO, Comentarios.INVALID_SUSTENTO, 0, 1, 3, 0));
+        response.add(new DetalleFormato(4, 5, 10, "apPaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 4, 0));
+        response.add(new DetalleFormato(4, 6, 10, "apMaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 5, 0));
+        response.add(new DetalleFormato(4, 7, 10, "nombres", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 6, 0));
+        response.add(new DetalleFormato(4, 8, 10, "documento", Validaciones.DOCUMENTO, Mensajes.INVALID_DOCUMENTO, Comentarios.INVALID_DOCUMENTO, 0, 1, 7, 0));
+        response.add(new DetalleFormato(4, 9, 10, "procedencia", Validaciones.PROCEDENCIA, Mensajes.INVALID_PROCEDENCIA, Comentarios.INVALID_PROCEDENCIA, 0, 1, 8, 0));
+        response.add(new DetalleFormato(4, 10, 10, "aporte", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 9, 0));
         
-        detalle = new DetalleFormato();        
-        detalle.setId(4);
-        detalle.setHojaExcel(1);
-        detalle.setColumnaExcel(8);
-        detalle.setFilaExcel(13);
-        detalle.setNombreColumna("TOTAL");
-        detalle.setValidacion(Validaciones.V_AMOUNT);
-        detalle.setMensajeValidacion(Mensajes.M_INVALID_AMOUNT);
-        detalle.setComentario(Comentarios.C_INVALID_AMOUNT);
-        detalle.setUnico(0);
-        detalle.setObligatorio(1);
-        detalle.setOrden(4);
-        detalle.setType(0);
-        response.add(detalle);          
-                
         return response;         
     }
 

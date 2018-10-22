@@ -24,7 +24,7 @@ public class testExcel {
     public static void main(String[] args) {
         try {
             String path = testExcel.class.getResource("/formatos/Formato_5.xlsx").toURI().getPath();            
-            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(path));
+            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH));
             int tipoFormato = FormatoEnum.FORMATO_5.getId();
             IFactoryService factory = new FactoryService();
             IExcelXSSFValidatorService excelValidator = factory.validateExcelXSSF(file, tipoFormato);
@@ -33,7 +33,7 @@ public class testExcel {
             System.out.println(responseJson);
             
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("ADVERTENCIA:"+e.getMessage());
         }
     }
        

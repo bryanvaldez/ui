@@ -21,6 +21,15 @@ public class CellStyle {
     public XSSFColor COLOR_CELL_ENUM = new XSSFColor(new java.awt.Color(215, 210, 183));    
     public XSSFColor YELLOW_CELL = new XSSFColor(new java.awt.Color(255, 255, 0)); 
     
+    
+    public XSSFCellStyle styleCellObservation(XSSFWorkbook wb) {
+        XSSFCellStyle style = wb.createCellStyle();
+        style = getBorderMedium(style);
+        style.setFillForegroundColor(YELLOW_CELL);
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return style;
+    }       
+    
     public XSSFCellStyle styleCellAmountTotal(XSSFWorkbook wb) {
         XSSFCellStyle style = wb.createCellStyle();
         style.setFont(getfontTotal(wb));
@@ -37,6 +46,24 @@ public class CellStyle {
         font.setFontHeightInPoints((short) 11);
         font.setBold(true);
         return font;
+    }    
+    
+    
+    private XSSFCellStyle getBorderThin(XSSFCellStyle style) {
+        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+        style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        return style;
+    }    
+    private XSSFCellStyle getBorderMedium(XSSFCellStyle style) {
+        style.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        style.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        style.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        style.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        return style;
     }    
     
 }
