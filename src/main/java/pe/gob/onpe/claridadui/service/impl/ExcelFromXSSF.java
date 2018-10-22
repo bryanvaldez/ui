@@ -60,8 +60,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         return new Gson().toJson(jResponse);
     }
     
-    public JsonArray getSheetsData(Formato formato){
-        
+    public JsonArray getSheetsData(Formato formato){        
         JsonArray jResponse = new JsonArray();         
         JsonObject jSheet1;
         JsonObject jSheet2;
@@ -74,32 +73,43 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             int position = formatSheet.get("hoja").getAsInt()-1;
             XSSFSheet sheet = workbook.getSheetAt(position);
             JsonObject sheetParam = getSheetParam(sheet, formato, formatSheet);
-            switch(position){
-                case 0:
-                    jSheet1 = getSheet1(sheet, formato);
-                    jResponse.add(jSheet1);
-                    break;
-                case 1:
-                    jSheet2 = getSheet2(formato, formatSheet, position);
-                    jResponse.add(jSheet2);
-                    break;
-                case 2:
-                    jSheet3 = getSheet3(formato, formatSheet, position);
-                    jResponse.add(jSheet3);
-                    break;
-                case 3:
-                    jSheet4 = getSheet4(sheet, formato, sheetParam);
-                    jResponse.add(jSheet4);
-                    break;                        
-            }                        
+
+            if(validateNameSheet(sheet, formatSheet)){
+                switch(position){
+                    case 0:
+                        jSheet1 = getSheet1(sheet, formato);
+                        jResponse.add(jSheet1);
+                        break;
+                    case 1:
+                        jSheet2 = getSheet2(formato, formatSheet, position);
+                        jResponse.add(jSheet2);
+                        break;
+                    case 2:
+                        jSheet3 = getSheet3(formato, formatSheet, position);
+                        jResponse.add(jSheet3);
+                        break;
+                    case 3:
+                        jSheet4 = getSheet4(sheet, formato, sheetParam);
+                        jResponse.add(jSheet4);
+                        break;                        
+                }             
+            }           
         }        
         return jResponse;
     }    
     public JsonObject getSheet4(XSSFSheet sheet, Formato formato, JsonObject sheetParam){
         JsonObject jResponse = new JsonObject();
         JsonObject data = new JsonObject();
-        boolean success = true;
+        boolean formatValid = true;
+        
+        Iterator<Row> rowIterator = sheet.iterator();
+        
+        
 
+        JsonObject jDataSheet = new JsonObject();
+        
+        
+        
         return jResponse;
     }         
     public JsonObject getSheet1(XSSFSheet sheet, Formato formato){
@@ -135,16 +145,14 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         JsonObject jResponse = new JsonObject();
         
         return jResponse;
-    }   
-    
+    }       
+
     
     private JsonObject getSheetParam(XSSFSheet sheet, Formato formato, JsonObject formatSheet){
         JsonObject jResponse = new JsonObject();
-        JsonObject data = new JsonObject();
-        boolean success = true;
-        
+        boolean success = true;        
         Iterator<Row> rowIterator = sheet.iterator();
-        
+          
         String initTable = formatSheet.get("iniTabla").getAsString();
         String subTotalTable = formatSheet.get("subtotal").getAsString();
         String totalTable = formatSheet.get("total").getAsString();        
@@ -155,7 +163,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         int totalRow = 0;
 
         boolean valve = true;
-        
+
         if(!initTable.equalsIgnoreCase("")){
             Row row;
             while (rowIterator.hasNext()) {
@@ -166,7 +174,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     while (cellIterator.hasNext()) {
                         celda = cellIterator.next();
                         String valueCell = getValueCell(celda).trim();
-                        
+
                         if(valueCell.equalsIgnoreCase(initTable)){
                             initRow = celda.getRow().getRowNum() + 1;                        
                         }else{
@@ -196,14 +204,22 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }             
         }else{
             success = false;
-        }
-        
+        }        
+                
         jResponse.addProperty("initRow", initRow);
         jResponse.addProperty("finRow", finRow);
         jResponse.addProperty("subtotalRow", subtotalRow);
         jResponse.addProperty("totalRow", totalRow);
         jResponse.addProperty("status", success);        
         return jResponse;        
+    }    
+    private boolean validateNameSheet(XSSFSheet sheet, JsonObject formatSheet){
+        boolean response = true;
+        String nameSheet = formatSheet.get("descripcion").getAsString();
+        if(!nameSheet.equalsIgnoreCase(sheet.getSheetName())){
+            response = false;
+        }
+        return response;        
     }
     
 }
