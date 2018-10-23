@@ -179,7 +179,13 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 }
                 //Subtotal
                 if(row.getRowNum() == subtotal && subtotal>0){
-                    System.out.println("subtotal");
+                    Cell cellTotal = row.getCell(columnaSuma);
+                    String valueCell = getValueCell(cellTotal);
+                    System.out.println("SUBTOTAL1:  "+valueCell);
+                    
+                    cellTotal = row.getCell(columnaSuma+1);
+                    valueCell = getValueCell(cellTotal);                    
+                    System.out.println("SUBTOTAL1:  "+valueCell);
                 }
                 
                 //Total
@@ -270,7 +276,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         validData = response;
         return response;
     }        
-    
+    //3 Validate Amount 
     
     
     
