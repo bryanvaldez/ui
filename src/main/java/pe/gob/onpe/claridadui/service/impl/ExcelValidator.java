@@ -24,40 +24,19 @@ public class ExcelValidator extends ExcelUtil{
     
     public final XSSFWorkbook workbook;
     public final int type;
-    public boolean invaliFormat= false;
+    
+    public boolean validExcel = true;
+    public boolean validData = true;
+    
+    public String msjValidExcel = "";
+    public String msjValidData = "";
+    
     public static final String PATH_OBSERVATION = "D:\\CLARIDAD3\\OBSERVACIONES\\INGRESOS\\prueba.xlsx";
     
     public ExcelValidator(XSSFWorkbook workbook, int type){
         this.workbook = workbook;
         this.type = type;
     }
-    
-    public boolean validateEmptyOrRegex(Cell cell, DetalleFormato parameter, String value) {
-        String regex = parameter.getValidacion();
-        String messageRegexError = parameter.getMensajeValidacion();
-        String messageEmptyError = parameter.getComentario();
-        boolean formatValidation = true;
-        
-        XSSFSheet sheet = (XSSFSheet) cell.getSheet();
-        XSSFWorkbook wb = (XSSFWorkbook) sheet.getWorkbook();
-
-        if (value.equalsIgnoreCase("")) {
-            if (parameter.getObligatorio() == Validaciones.FORMAT_REQUIRED) {
-                cell.setCellStyle(styleCellObservation(wb));
-                cell.setCellComment(getComentario(cell, messageEmptyError));
-                formatValidation = false;  
-            }
-        } else {
-            if (regex != null && !regex.trim().isEmpty()) {
-                if (!value.matches(regex)) {
-                    cell.setCellStyle(styleCellObservation(wb));
-                    cell.setCellComment(getComentario(cell, messageRegexError));
-                    formatValidation = false;
-                }
-            }
-        }
-        return formatValidation;
-    }      
     
     public boolean saveFileObservation(XSSFWorkbook workbook, Formato formato) {
         try {

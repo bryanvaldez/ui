@@ -72,25 +72,29 @@ public class FormatoService implements IFormatoService {
             hoja1.addProperty("iniTabla", "");
             hoja1.addProperty("subtotal", "");
             hoja1.addProperty("total", "");
+            hoja1.addProperty("columnaSuma", 8);
             
             hoja2.addProperty("hoja", 2);
             hoja2.addProperty("descripcion", "Anexo-5A");
             hoja2.addProperty("iniTabla", "Apellido Paterno");
             hoja2.addProperty("subtotal", "SUBTOTALES");
-            hoja2.addProperty("total", "TOTAL INGRESOS");            
+            hoja2.addProperty("total", "TOTAL INGRESOS"); 
+            hoja2.addProperty("columnaSuma", 10);
             
             hoja3.addProperty("hoja", 3);
             hoja3.addProperty("descripcion", "Anexo-5B");
             hoja3.addProperty("iniTabla", "Fecha de la actividad");
             hoja3.addProperty("subtotal", "");
-            hoja3.addProperty("total", "TOTAL INGRESOS");                  
+            hoja3.addProperty("total", "TOTAL INGRESOS");
+            hoja3.addProperty("columnaSuma", 6);
             
             hoja4.addProperty("hoja", 4);
             hoja4.addProperty("descripcion", "Anexo-5C");
             hoja4.addProperty("iniTabla", "Fecha del ingreso");
             hoja4.addProperty("subtotal", "");
-            hoja4.addProperty("total", "Total");                 
-
+            hoja4.addProperty("total", "Total");   
+            hoja4.addProperty("columnaSuma", 10);
+            
             jResponse.add(hoja1);
             jResponse.add(hoja2);
             jResponse.add(hoja3);
@@ -181,7 +185,7 @@ public class FormatoService implements IFormatoService {
         //PARAMETROS DE LECTURA ANEXO 5C        
         response.add(new DetalleFormato(4, 2, 10, "fecAporte", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0));
         response.add(new DetalleFormato(4, 3, 10, "codAporte", Validaciones.TABLA3, Mensajes.INVALID_TABLA3, Comentarios.INVALID_TABLA3, 0, 1, 2, 0));
-        response.add(new DetalleFormato(4, 3, 10, "sustento", Validaciones.SUSTENTO, Mensajes.INVALID_SUSTENTO, Comentarios.INVALID_SUSTENTO, 0, 1, 3, 0));
+        response.add(new DetalleFormato(4, 4, 10, "sustento", Validaciones.SUSTENTO, Mensajes.INVALID_SUSTENTO, Comentarios.INVALID_SUSTENTO, 0, 1, 3, 0));
         response.add(new DetalleFormato(4, 5, 10, "apPaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 4, 0));
         response.add(new DetalleFormato(4, 6, 10, "apMaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 5, 0));
         response.add(new DetalleFormato(4, 7, 10, "nombres", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 6, 0));

@@ -29,24 +29,6 @@ import pe.gob.onpe.claridadui.model.Formato;
  * @author bvaldez
  */
 public class ExcelUtil extends CellStyle{
-
-    public boolean isSheetValid(XSSFWorkbook workbook, Formato format) {
-        boolean response = false;
-        int isSheetValid = 0;
-        JsonArray formatSheets = new JsonParser().parse(format.getDetalleHoja()).getAsJsonArray();
-        for (int i = 0; i < formatSheets.size(); i++) {
-            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();
-            for (int j = 0; j < workbook.getNumberOfSheets(); j++) {
-                if (formatSheet.get("descripcion").getAsString().equalsIgnoreCase(workbook.getSheetName(j))) {
-                    isSheetValid++;
-                }
-            }
-        }
-        if (isSheetValid == formatSheets.size() && workbook.getNumberOfSheets() == formatSheets.size()) {
-            response = true;
-        }
-        return response;
-    }
     
     public String getValueCell(Cell celda) {
         String response = "";
