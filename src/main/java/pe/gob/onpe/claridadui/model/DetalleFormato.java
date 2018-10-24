@@ -21,12 +21,13 @@ public class DetalleFormato {
     private int unico;
     private int obligatorio;
     private int orden;
-    private int type;
+    private int procesoDetalle;
+    private int tipoDato;
 
     public DetalleFormato() {
     }
 
-    public DetalleFormato(int hojaExcel, int columnaExcel, int filaExcel, String nombreColumna, String validacion, String mensajeValidacion, String comentario, int unico, int obligatorio, int orden, int type) {
+    public DetalleFormato(int hojaExcel, int columnaExcel, int filaExcel, String nombreColumna, String validacion, String mensajeValidacion, String comentario, int unico, int obligatorio, int orden, int proceso, int tipo) {
         this.hojaExcel = hojaExcel;
         this.columnaExcel = columnaExcel;
         this.filaExcel = filaExcel;
@@ -37,7 +38,8 @@ public class DetalleFormato {
         this.unico = unico;
         this.obligatorio = obligatorio;
         this.orden = orden;
-        this.type = type;
+        this.procesoDetalle = proceso;
+        this.tipoDato = tipo;
     }
     
     public int getId() {
@@ -128,12 +130,20 @@ public class DetalleFormato {
         this.filaExcel = filaExcel;
     }
 
-    public int getType() {
-        return type;
+    public int getProcesoDetalle() {
+        return procesoDetalle;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setProcesoDetalle(int procesoDetalle) {
+        this.procesoDetalle = procesoDetalle;
     }
-    
+
+    public int getTipoDato() {
+        return tipoDato;
+    }
+
+    public void setTipoDato(int tipoDato) {
+        this.tipoDato = tipoDato;
+    }
+
 }

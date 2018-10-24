@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.gob.onpe.claridadui.Constants.Validaciones;
+import pe.gob.onpe.claridadui.enums.FormatoEnum;
 import pe.gob.onpe.claridadui.model.DetalleFormato;
 import pe.gob.onpe.claridadui.model.Formato;
 import pe.gob.onpe.claridadui.util.ExcelUtil;
@@ -31,7 +32,8 @@ public class ExcelValidator extends ExcelUtil{
     public String msjValidExcel = "";
     public String msjValidData = "";
     
-    public static final String PATH_OBSERVATION = "D:\\CLARIDAD3\\OBSERVACIONES\\INGRESOS\\prueba.xlsx";
+    public static final String PATH_OBSERVATION_INCOME = "D:\\CLARIDAD3\\OBSERVACIONES\\INGRESOS\\prueba.xlsx";
+    public static final String PATH_OBSERVATION_EXPENSES = "D:\\CLARIDAD3\\OBSERVACIONES\\GASTOS\\prueba.xlsx";
     
     public ExcelValidator(XSSFWorkbook workbook, int type){
         this.workbook = workbook;
@@ -40,7 +42,15 @@ public class ExcelValidator extends ExcelUtil{
     
     public boolean saveFileObservation(XSSFWorkbook workbook, Formato formato) {
         try {
-            String path = PATH_OBSERVATION;
+            String path = "";
+            
+            if(formato.getId() == FormatoEnum.FORMATO_5.getId()){
+                path = PATH_OBSERVATION_INCOME;
+            }
+            if(formato.getId() == FormatoEnum.FORMATO_6.getId()){
+                path = PATH_OBSERVATION_EXPENSES;
+            }            
+            
             File fileExcelResultado = new File(path);
             OutputStream outputStream = new FileOutputStream(fileExcelResultado);
             workbook.write(outputStream);

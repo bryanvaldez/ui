@@ -19,13 +19,15 @@ import pe.gob.onpe.claridadui.service.impl.FactoryService;
  */
 public class testExcel {
 
-    public static final String PATH = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
+    public static final String PATH_FORMATO_5 = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
+    public static final String PATH_FORMATO_6 = "D:\\CLARIDAD3\\PRUEBA\\Formato_6.xlsx";
         
     public static void main(String[] args) {
         try {
             String path = testExcel.class.getResource("/formatos/Formato_5.xlsx").toURI().getPath();            
-            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH));
-            int tipoFormato = FormatoEnum.FORMATO_5.getId();
+            int tipoFormato = FormatoEnum.FORMATO_6.getId();
+            
+            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH_FORMATO_6));
             IFactoryService factory = new FactoryService();
             IExcelXSSFValidatorService excelValidator = factory.validateExcelXSSF(file, tipoFormato);
             

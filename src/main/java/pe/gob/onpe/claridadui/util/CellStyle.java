@@ -24,7 +24,7 @@ public class CellStyle {
     
     public XSSFCellStyle styleCellObservation(XSSFWorkbook wb) {
         XSSFCellStyle style = wb.createCellStyle();
-        style = getBorderMedium(style);
+        style = getBorderThin(style);
         style.setFillForegroundColor(YELLOW_CELL);
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return style;
