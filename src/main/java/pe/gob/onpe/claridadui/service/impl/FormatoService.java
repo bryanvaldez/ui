@@ -181,46 +181,46 @@ public class FormatoService implements IFormatoService {
     private List<DetalleFormato> getIncomeDetail(){
         List<DetalleFormato> p = new ArrayList<>();
         //PARAMETROS DE LECTURA - FORMATO 5
-        p.add(new DetalleFormato(1, 8, 10, "5A", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(1, 8, 11, "5B", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(1, 8, 12, "5C", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(1, 8, 13, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 4, 0, Validaciones.TYPE_TOTAL));
+        p.add(new DetalleFormato(1, 8, 10, "5A", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 1, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 8, 11, "5B", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 2, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 8, 12, "5C", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 3, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 8, 13, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 4, 0, Validaciones.T_TOTAL, false));
           
         //PARAMETROS DE LECTURA ANEXO 5A 
-        p.add(new DetalleFormato(2, 2, 0, "fecAporte", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 3, 0, "numComprobante", Validaciones.COMPROBANTE, Mensajes.INVALID_COMPROBANTE, Comentarios.INVALID_COMPROBANTE, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 4, 0, "apPaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 5, 0, "apMaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 4, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 6, 0, "nombres", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 5, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 7, 0, "documento", Validaciones.DOCUMENTO, Mensajes.INVALID_DOCUMENTO, Comentarios.INVALID_DOCUMENTO, 0, 1, 6, 0, Validaciones.TYPE_TABLE));                
-        p.add(new DetalleFormato(2, 8, 0, "direccion", Validaciones.DIRECCION, Mensajes.INVALID_DIRECCION, Comentarios.INVALID_DIRECCION, 0, 1, 7, 0, Validaciones.TYPE_TABLE));        
-        p.add(new DetalleFormato(2, 9, 0, "codAporte", Validaciones.TABLA1, Mensajes.INVALID_TABLA1, Comentarios.INVALID_TABLA1, 0, 1, 8, 0, Validaciones.TYPE_TABLE));         
-        p.add(new DetalleFormato(2, 10, 0, "montoEfectivo", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 9, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 11, 0, "montoEspecie", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 10, 0, Validaciones.TYPE_TABLE));        
-        p.add(new DetalleFormato(2, 12, 0, "detalle", Validaciones.DETALLE, Mensajes.INVALID_DETALLE, Comentarios.INVALID_DETALLE, 0, 1, 11, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 10, 0, "subTotalEfectivo", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 12, 0, Validaciones.TYPE_SUBTOTAL)); 
-        p.add(new DetalleFormato(2, 11, 0, "subTotalEspecie", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 13, 0, Validaciones.TYPE_SUBTOTAL));         
-        p.add(new DetalleFormato(2, 10, 0, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 14, 0, Validaciones.TYPE_TOTAL)); 
+        p.add(new DetalleFormato(2, 2, 0, "fecAporte", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 1, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 3, 0, "numComprobante", Validaciones.COMPROB, Mensajes.I_COMPROBANTE, Comentarios.I_COMPROBANTE, 0, 1, 2, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 4, 0, "apPaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 3, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 5, 0, "apMaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 4, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 6, 0, "nombres", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 5, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 7, 0, "documento", Validaciones.DOCUMENTO, Mensajes.I_DOCUMENTO, Comentarios.I_DOCUMENTO, 0, 1, 6, 0, Validaciones.T_TABLE, false));                
+        p.add(new DetalleFormato(2, 8, 0, "direccion", Validaciones.DIRECCION, Mensajes.I_DIRECCION, Comentarios.I_DIRECCION, 0, 1, 7, 0, Validaciones.T_TABLE, false));        
+        p.add(new DetalleFormato(2, 9, 0, "codAporte", Validaciones.TABLA1, Mensajes.I_TABLA1, Comentarios.I_TABLA1, 0, 1, 8, 0, Validaciones.T_TABLE, false));         
+        p.add(new DetalleFormato(2, 10, 0, "montoEfectivo", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 9, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(2, 11, 0, "montoEspecie", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 10, 0, Validaciones.T_TABLE, true));        
+        p.add(new DetalleFormato(2, 12, 0, "detalle", Validaciones.DETALLE, Mensajes.I_DETALLE, Comentarios.I_DETALLE, 0, 1, 11, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 10, 0, "subTotalEfectivo", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 12, 0, Validaciones.T_SUBTOTAL, false)); 
+        p.add(new DetalleFormato(2, 11, 0, "subTotalEspecie", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 13, 0, Validaciones.T_SUBTOTAL, false));         
+        p.add(new DetalleFormato(2, 10, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 14, 0, Validaciones.T_TOTAL, false)); 
         
         //PARAMETROS DE LECTURA ANEXO 5B        
-        p.add(new DetalleFormato(3, 2, 0, "fecActividad", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 3, 0, "codActividad", Validaciones.TABLA2, Mensajes.INVALID_TABLA2, Comentarios.INVALID_TABLA2, 0, 1, 2, 0, Validaciones.TYPE_TABLE)); 
-        p.add(new DetalleFormato(3, 4, 0, "lugarActividad", Validaciones.LUGAR, Mensajes.INVALID_LUGAR, Comentarios.INVALID_LUGAR, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 6, 0, "importe", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 4, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 7, 0, "detalle", Validaciones.DETALLE, Mensajes.INVALID_DETALLE, Comentarios.INVALID_DETALLE, 0, 1, 5, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 6, 0, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 6, 0, Validaciones.TYPE_TOTAL));          
+        p.add(new DetalleFormato(3, 2, 0, "fecActividad", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 1, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 3, 0, "codActividad", Validaciones.TABLA2, Mensajes.I_TABLA2, Comentarios.I_TABLA2, 0, 1, 2, 0, Validaciones.T_TABLE, false)); 
+        p.add(new DetalleFormato(3, 4, 0, "lugarActividad", Validaciones.LUGAR, Mensajes.I_LUGAR, Comentarios.I_LUGAR, 0, 1, 3, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 6, 0, "importe", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 4, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(3, 7, 0, "detalle", Validaciones.DETALLE, Mensajes.I_DETALLE, Comentarios.I_DETALLE, 0, 1, 5, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 6, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 6, 0, Validaciones.T_TOTAL, false));          
         
         //PARAMETROS DE LECTURA ANEXO 5C        
-        p.add(new DetalleFormato(4, 2, 0, "fecAporte", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 3, 0, "codAporte", Validaciones.TABLA3, Mensajes.INVALID_TABLA3, Comentarios.INVALID_TABLA3, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 4, 0, "sustento", Validaciones.SUSTENTO, Mensajes.INVALID_SUSTENTO, Comentarios.INVALID_SUSTENTO, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 5, 0, "apPaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 4, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 6, 0, "apMaterno", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 5, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 7, 0, "nombres", Validaciones.NOMBRES, Mensajes.INVALID_NOMBRES, Comentarios.INVALID_NOMBRES, 0, 1, 6, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 8, 0, "documento", Validaciones.DOCUMENTO, Mensajes.INVALID_DOCUMENTO, Comentarios.INVALID_DOCUMENTO, 0, 1, 7, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 9, 0, "procedencia", Validaciones.PROCEDENCIA, Mensajes.INVALID_PROCEDENCIA, Comentarios.INVALID_PROCEDENCIA, 0, 1, 8, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 10, 0, "aporte", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 9, 0, Validaciones.TYPE_TABLE));        
-        p.add(new DetalleFormato(4, 10, 0, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 10, 0, Validaciones.TYPE_TOTAL));          
+        p.add(new DetalleFormato(4, 2, 0, "fecAporte", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 1, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 3, 0, "codAporte", Validaciones.TABLA3, Mensajes.I_TABLA3, Comentarios.I_TABLA3, 0, 1, 2, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 4, 0, "sustento", Validaciones.SUSTENTO, Mensajes.I_SUSTENTO, Comentarios.I_SUSTENTO, 0, 1, 3, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 5, 0, "apPaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 4, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 6, 0, "apMaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 5, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 7, 0, "nombres", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 6, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 8, 0, "documento", Validaciones.DOCUMENTO, Mensajes.I_DOCUMENTO, Comentarios.I_DOCUMENTO, 0, 1, 7, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 9, 0, "procedencia", Validaciones.PROCEDENCIA, Mensajes.I_PROCEDENCIA, Comentarios.I_PROCEDENCIA, 0, 1, 8, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 10, 0, "aporte", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 9, 0, Validaciones.T_TABLE, true));        
+        p.add(new DetalleFormato(4, 10, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 10, 0, Validaciones.T_TOTAL, false));          
         
         return p;         
     }
@@ -228,47 +228,47 @@ public class FormatoService implements IFormatoService {
     private List<DetalleFormato> getExpensesDetail(){
         List<DetalleFormato> p = new ArrayList<>();        
         //PARAMETROS DE LECTURA - FORMATO 6
-        p.add(new DetalleFormato(1, 7, 8, "6A", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(1, 7, 9, "6B", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(1, 7, 10, "6C", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(1, 7, 11, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 4, 0, Validaciones.TYPE_TOTAL));   
+        p.add(new DetalleFormato(1, 7, 8, "6A", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 1, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 7, 9, "6B", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 2, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 7, 10, "6C", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 3, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 7, 11, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 4, 0, Validaciones.T_TOTAL, false));   
         
         //PARAMETROS DE LECTURA ANEXO 6A
-        p.add(new DetalleFormato(2, 2, 0, "fecComprobante", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 3, 0, "tipoMedio", Validaciones.MEDIO, Mensajes.INVALID_MEDIO, Comentarios.INVALID_MEDIO, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 4, 0, "razonSocial", Validaciones.RAZON, Mensajes.INVALID_RAZON, Comentarios.INVALID_RAZON, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 5, 0, "ruc", Validaciones.RUC, Mensajes.INVALID_RUC, Comentarios.INVALID_RUC, 0, 1, 4, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 6, 0, "tipoComprobante", Validaciones.TIPOCOMPROBANTE, Mensajes.INVALID_TIPOCOMPROBANTE, Comentarios.INVALID_TIPOCOMPROBANTE, 0, 1, 5, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 7, 0, "numComprobante", Validaciones.NUMCOMPROBANTE, Mensajes.INVALID_NUMCOMPROBANTE, Comentarios.INVALID_NUMCOMPROBANTE, 0, 1, 6, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 8, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.INVALID_TIPOPAGO, Comentarios.INVALID_TIPOPAGO, 0, 1, 7, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 9, 0, "monto", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 8, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 10, 0, "descripcion", Validaciones.ESPECIFICACION, Mensajes.INVALID_ESPECIFICACION, Comentarios.INVALID_ESPECIFICACION, 0, 1, 9, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(2, 9, 0, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 10, 0, Validaciones.TYPE_TOTAL));
+        p.add(new DetalleFormato(2, 2, 0, "fecComprobante", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 1, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 3, 0, "tipoMedio", Validaciones.MEDIO, Mensajes.I_MEDIO, Comentarios.I_MEDIO, 0, 1, 2, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 4, 0, "razonSocial", Validaciones.RAZON, Mensajes.I_RAZON, Comentarios.I_RAZON, 0, 1, 3, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 5, 0, "ruc", Validaciones.RUC, Mensajes.I_RUC, Comentarios.I_RUC, 0, 1, 4, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 6, 0, "tipoComprobante", Validaciones.TIPCOMPROB, Mensajes.I_TIPCOMPROB, Comentarios.I_TIPCOMPROB, 0, 1, 5, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 7, 0, "numComprobante", Validaciones.NUMCOMPROB, Mensajes.I_NUMCOMPROB, Comentarios.I_NUMCOMPROB, 0, 1, 6, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 8, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.I_TIPOPAGO, Comentarios.I_TIPOPAGO, 0, 1, 7, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 9, 0, "monto", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 8, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(2, 10, 0, "descripcion", Validaciones.ESPECIF, Mensajes.I_ESPECIFIC, Comentarios.I_ESPECIFIC, 0, 1, 9, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 9, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 10, 0, Validaciones.T_TOTAL, false));
         
         //PARAMETROS DE LECTURA ANEXO 6B
-        p.add(new DetalleFormato(3, 2, 0, "fecComprobante", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 3, 0, "tipoGasto", Validaciones.TIPOGASTO, Mensajes.INVALID_TIPOGASTO, Comentarios.INVALID_TIPOGASTO, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 4, 0, "razonSocial", Validaciones.RAZON, Mensajes.INVALID_RAZON, Comentarios.INVALID_RAZON, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 5, 0, "tipoDocumento", Validaciones.TIPODOC, Mensajes.INVALID_TIPODOC, Comentarios.INVALID_TIPODOC, 0, 1, 4, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 6, 0, "documento", Validaciones.DOCUMENTO, Mensajes.INVALID_DOCUMENTO, Comentarios.INVALID_DOCUMENTO, 0, 1, 5, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 7, 0, "tipoComprobante", Validaciones.TIPOCOMPROBANTE, Mensajes.INVALID_TIPOCOMPROBANTE, Comentarios.INVALID_TIPOCOMPROBANTE, 0, 1, 6, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 8, 0, "numComprobante", Validaciones.NUMCOMPROBANTE, Mensajes.INVALID_NUMCOMPROBANTE, Comentarios.INVALID_NUMCOMPROBANTE, 0, 1, 7, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 9, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.INVALID_TIPOPAGO, Comentarios.INVALID_TIPOPAGO, 0, 1, 8, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 10, 0, "monto", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 9, 0, Validaciones.TYPE_TABLE));        
-        p.add(new DetalleFormato(3, 11, 0, "descripcion", Validaciones.ESPECIFICACION, Mensajes.INVALID_ESPECIFICACION, Comentarios.INVALID_ESPECIFICACION, 0, 1, 10, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(3, 10, 0, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 11, 0, Validaciones.TYPE_TOTAL));
+        p.add(new DetalleFormato(3, 2, 0, "fecComprobante", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 1, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 3, 0, "tipoGasto", Validaciones.TIPOGASTO, Mensajes.I_TIPOGASTO, Comentarios.I_TIPOGASTO, 0, 1, 2, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 4, 0, "razonSocial", Validaciones.RAZON, Mensajes.I_RAZON, Comentarios.I_RAZON, 0, 1, 3, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 5, 0, "tipoDocumento", Validaciones.TIPODOC, Mensajes.I_TIPODOC, Comentarios.I_TIPODOC, 0, 1, 4, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 6, 0, "documento", Validaciones.DOCUMENTO, Mensajes.I_DOCUMENTO, Comentarios.I_DOCUMENTO, 0, 1, 5, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 7, 0, "tipoComprobante", Validaciones.TIPCOMPROB, Mensajes.I_TIPCOMPROB, Comentarios.I_TIPCOMPROB, 0, 1, 6, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 8, 0, "numComprobante", Validaciones.NUMCOMPROB, Mensajes.I_NUMCOMPROB, Comentarios.I_NUMCOMPROB, 0, 1, 7, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 9, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.I_TIPOPAGO, Comentarios.I_TIPOPAGO, 0, 1, 8, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 10, 0, "monto", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 9, 0, Validaciones.T_TABLE, true));        
+        p.add(new DetalleFormato(3, 11, 0, "descripcion", Validaciones.ESPECIF, Mensajes.I_ESPECIFIC, Comentarios.I_ESPECIFIC, 0, 1, 10, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 10, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 11, 0, Validaciones.T_TOTAL, false));
                 
         //PARAMETROS DE LECTURA ANEXO 6B
-        p.add(new DetalleFormato(4, 2, 0, "fecGasto", Validaciones.FECHA, Mensajes.INVALID_FECHA, Comentarios.INVALID_FECHA, 0, 1, 1, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 3, 0, "concepto", Validaciones.ESPECIFICACION, Mensajes.INVALID_ESPECIFICACION, Comentarios.INVALID_ESPECIFICACION, 0, 1, 2, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 4, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.INVALID_TIPOPAGO, Comentarios.INVALID_TIPOPAGO, 0, 1, 3, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 5, 0, "monto", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 4, 0, Validaciones.TYPE_TABLE));         
-        p.add(new DetalleFormato(4, 6, 0, "razonSocial", Validaciones.RAZON, Mensajes.INVALID_RAZON, Comentarios.INVALID_RAZON, 0, 1, 5, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 7, 0, "tipoDocumento", Validaciones.TIPODOC, Mensajes.INVALID_TIPODOC, Comentarios.INVALID_TIPODOC, 0, 1, 6, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 8, 0, "documento", Validaciones.DOCUMENTO, Mensajes.INVALID_DOCUMENTO, Comentarios.INVALID_DOCUMENTO, 0, 1, 7, 0, Validaciones.TYPE_TABLE));   
-        p.add(new DetalleFormato(4, 9, 0, "tipoComprobante", Validaciones.TIPOCOMPROBANTE, Mensajes.INVALID_TIPOCOMPROBANTE, Comentarios.INVALID_TIPOCOMPROBANTE, 0, 1, 8, 0, Validaciones.TYPE_TABLE));
-        p.add(new DetalleFormato(4, 10, 0, "numComprobante", Validaciones.NUMCOMPROBANTE, Mensajes.INVALID_NUMCOMPROBANTE, Comentarios.INVALID_NUMCOMPROBANTE, 0, 1, 9, 0, Validaciones.TYPE_TABLE));        
-        p.add(new DetalleFormato(4, 5, 0, "total", Validaciones.MONTO, Mensajes.INVALID_MONTO, Comentarios.INVALID_MONTO, 0, 1, 10, 0, Validaciones.TYPE_TOTAL));
+        p.add(new DetalleFormato(4, 2, 0, "fecGasto", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 1, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 3, 0, "concepto", Validaciones.ESPECIF, Mensajes.I_ESPECIFIC, Comentarios.I_ESPECIFIC, 0, 1, 2, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 4, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.I_TIPOPAGO, Comentarios.I_TIPOPAGO, 0, 1, 3, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 5, 0, "monto", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 4, 0, Validaciones.T_TABLE, true));         
+        p.add(new DetalleFormato(4, 6, 0, "razonSocial", Validaciones.RAZON, Mensajes.I_RAZON, Comentarios.I_RAZON, 0, 1, 5, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 7, 0, "tipoDocumento", Validaciones.TIPODOC, Mensajes.I_TIPODOC, Comentarios.I_TIPODOC, 0, 1, 6, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 8, 0, "documento", Validaciones.DOCUMENTO, Mensajes.I_DOCUMENTO, Comentarios.I_DOCUMENTO, 0, 1, 7, 0, Validaciones.T_TABLE, false));   
+        p.add(new DetalleFormato(4, 9, 0, "tipoComprobante", Validaciones.TIPCOMPROB, Mensajes.I_TIPCOMPROB, Comentarios.I_TIPCOMPROB, 0, 1, 8, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 10, 0, "numComprobante", Validaciones.NUMCOMPROB, Mensajes.I_NUMCOMPROB, Comentarios.I_NUMCOMPROB, 0, 1, 9, 0, Validaciones.T_TABLE, false));        
+        p.add(new DetalleFormato(4, 5, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 10, 0, Validaciones.T_TOTAL, false));
         
         return p;
     }

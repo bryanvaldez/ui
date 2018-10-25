@@ -63,7 +63,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
    
     //-----------------------------------------------------------Step 
     //1 Step
-    public JsonArray getSheetsData(Formato formato){        
+    private JsonArray getSheetsData(Formato formato){        
         JsonArray jResponse = new JsonArray();         
         JsonObject jSheetData;
              
@@ -74,7 +74,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             XSSFSheet sheet = workbook.getSheetAt(position);
             JsonObject coordinates = getCoordinates(sheet, formato, formatSheet);
 
-            jSheetData = iteratorRow(formato, coordinates, position);  
+            jSheetData = getRowIterator(formato, coordinates, position);  
             jResponse.add(jSheetData);                          
         }        
         return jResponse;
@@ -146,84 +146,100 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         return jResponse;        
     } 
     //3 Step
-    private JsonObject iteratorRow(Formato formato, JsonObject coordinates, int position){    
+    private JsonObject getRowIterator(Formato formato, JsonObject coordinates, int position){    
         
         JsonObject jResponse = new JsonObject();        
         JsonArray jdata = new JsonArray();
         XSSFSheet sheet = workbook.getSheetAt(position);
         
+        String columna1 ="", columna2 ="";
+        double sumaTablaCol1 = 0;
+        double sumaTablaCol2= 0;
+        
+        double sumaSubtotal= 0;
+        
         if(coordinates.get("status").getAsBoolean()){                                  
-            int initTable = coordinates.get("initRow").getAsInt();
-            int finTable = coordinates.get("finRow").getAsInt();
-            int subtotal = coordinates.get("subtotalRow").getAsInt();
-            int total = coordinates.get("totalRow").getAsInt();    
+            int rowInitTable = coordinates.get("initRow").getAsInt();
+            int rowFinTable = coordinates.get("finRow").getAsInt();
+            int rowSubtotal = coordinates.get("subtotalRow").getAsInt();
+            int rowTotal = coordinates.get("totalRow").getAsInt();    
             Iterator<Row> rowIterator = sheet.iterator();  
             Row row;            
-            while (rowIterator.hasNext()) {
-                JsonObject rowResult = new JsonObject();                
-                row = rowIterator.next();                     
-                
-                //Data Table
-                if (row.getRowNum() >= initTable && row.getRowNum() <= finTable) {
-                    Iterator<Cell> cellIterator = row.cellIterator();  
-                    Cell cell;
-                    while (cellIterator.hasNext()) {
-                        cell = cellIterator.next();
+            while (rowIterator.hasNext()) {               
+                row = rowIterator.next();                           
+                JsonObject rowOut;                                                                 
+                if (row.getRowNum() >= rowInitTable && row.getRowNum() <= rowFinTable) { //Data Table
+                    rowOut = getCellIterator(formato, position, row, Validaciones.T_TABLE);                                        
+                    if(rowOut.get("success").getAsBoolean()){ 
+                        jdata.add(rowOut.getAsJsonObject("data"));
+                        String rowPosition = rowOut.get("cellPosition").getAsString();
+                        System.out.println(rowPosition);
+//                        
+//                        if(columna1.equalsIgnoreCase("")){
+//                            columna1 = rowPosition;
+//                            sumaTablaCol1 += rowOut.get("suma").getAsDouble();
+//                            System.out.println("HOJA:"+ (position+1) +" | columna:"+rowPosition +"  | SUMA1:  "+rowOut.get("suma").getAsDouble());                             
+//                        }else if(columna1.equalsIgnoreCase(rowPosition)){
+//                            sumaTablaCol1 += rowOut.get("suma").getAsDouble();
+//                            System.out.println("HOJA:"+ (position+1) +" | columna:"+rowPosition +"  | SUMA1:  "+rowOut.get("suma").getAsDouble());
+//                        }            
+//                        
                         
-                        //First Valitation
-                        JsonObject cellValue = getCellData(position, cell, formato, Validaciones.TYPE_TABLE);                        
-                        if(cellValue.get("success").getAsBoolean()){
-                            rowResult.addProperty(cellValue.get("labelCell").getAsString(), cellValue.get("valueCell").getAsString());  
-                            //Second Valitation
-                        }                       
+//                        if(columna2.equalsIgnoreCase(rowPosition)){
+//                            sumaTablaCol2 += rowOut.get("suma").getAsDouble();
+//                            System.out.println("HOJA:"+ (position+1) +"  | COLUMNA2:  "+rowOut.get("suma").getAsDouble());                          
+//                        }                        
                     }                    
-                    if(!rowResult.entrySet().isEmpty()){
-                        jdata.add(rowResult); 
-                    }             
-                }
-                
-                //Data Subtotal
-                if(row.getRowNum() == subtotal && subtotal>0){
-                    Iterator<Cell> cellIterator = row.cellIterator();  
-                    Cell cell;
-                    while (cellIterator.hasNext()) {
-                        cell = cellIterator.next();
-                        
-                        //First Valitation
-                        JsonObject cellValue = getCellData(position, cell, formato, Validaciones.TYPE_SUBTOTAL);                          
-                        if(cellValue.get("success").getAsBoolean()){                            
-                            System.out.println("HOJA:"+ (position+1) +"  | SUBTOTAL:  "+cellValue.get("valueCell").getAsString());  
-                            //Second Valitation
-                        }                       
-                    } 
-                }
-                
-                //Data Total
-                if(row.getRowNum() == total && total>0){
-                    Iterator<Cell> cellIterator = row.cellIterator();  
-                    Cell cell;
-                    while (cellIterator.hasNext()) {
-                        cell = cellIterator.next();
-                        
-                        //First Valitation
-                        JsonObject cellValue = getCellData(position, cell, formato, Validaciones.TYPE_TOTAL);                          
-                        if(cellValue.get("success").getAsBoolean()){    
-                            System.out.println("HOJA:"+ (position+1) +"  | TOTAL:  "+cellValue.get("valueCell").getAsString());  
-                            jResponse.addProperty("total", cellValue.get("valueCell").getAsDouble());                            
-                            
-                            //Second Valitation
-                                                        
-                        }                       
-                    }                                      
+                }else if(row.getRowNum() == rowSubtotal && rowSubtotal>0){  //Data Subtotal
+                    rowOut = getCellIterator(formato, position, row, Validaciones.T_SUBTOTAL);
+                    if(rowOut.get("success").getAsBoolean()){
+                        //System.out.println("HOJA:"+ (position+1) +"  | SUBTOTAL:  "+rowOut.get("suma").getAsDouble());                        
+                        rowOut = rowOut.getAsJsonObject("data");   
+                    }                      
+                }else if(row.getRowNum() == rowTotal && rowTotal>0){  //Data Total
+                    rowOut = getCellIterator(formato, position, row, Validaciones.T_TOTAL);
+                    if(rowOut.get("success").getAsBoolean()){
+                        validData_TotalAmount(position, row, rowOut, sumaTablaCol1);
+                    }                      
                 }                
             }            
         }        
+                      
         jResponse.add("data", jdata);         
-        jResponse.addProperty("formato", sheet.getSheetName());       
+        jResponse.addProperty("formato", sheet.getSheetName()); 
         return jResponse;       
     }    
     //4 Step
-    public JsonObject getCellData(int position, Cell cell, Formato formato, int typeData){
+    private JsonObject getCellIterator(Formato formato, int position, Row row, int TypeTable){        
+        JsonObject jResponse = new JsonObject();
+        JsonObject rowResult = new JsonObject();  
+        boolean succes = false;      
+        double suma = 0;
+        int cellPosition = 0;
+        Iterator<Cell> cellIterator = row.cellIterator();  
+        Cell cell;
+        while (cellIterator.hasNext()) {
+            cell = cellIterator.next();
+            JsonObject cellValue = getCellValue(position, cell, formato, TypeTable);                        
+            if(cellValue.get("success").getAsBoolean()){
+                if(cellValue.get("isSuma").getAsBoolean()){
+                    suma = cellValue.get("valueCell").getAsDouble();
+                    //System.out.println("hoja: "+ (position+1) +" | columna:"+cell.getColumnIndex() +" | SUMAR:  "+suma);
+                }
+                cellPosition = cell.getColumnIndex();
+                rowResult.addProperty(cellValue.get("labelCell").getAsString(), cellValue.get("valueCell").getAsString()); 
+                succes = true;
+            }                       
+        }                    
+        jResponse.addProperty("suma", suma);    
+        jResponse.addProperty("cellPosition", cellPosition); 
+        jResponse.add("data", rowResult);
+        jResponse.addProperty("success", succes);
+        System.out.println("hoja: "+ (position+1) +" | columna:"+cellPosition +" | SUMAR:  "+suma);        
+        return jResponse;    
+    }    
+    //5 Step
+    private JsonObject getCellValue(int position, Cell cell, Formato formato, int typeData){
         JsonObject jResponse = new JsonObject();
         boolean success  = false;
         for (DetalleFormato parameter : formato.getDetalle()) {            
@@ -234,7 +250,8 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(validCell){
                         success = true;
                         jResponse.addProperty("labelCell", parameter.getNombreColumna());
-                        jResponse.addProperty("valueCell", valueCell);                         
+                        jResponse.addProperty("valueCell", valueCell);
+                        jResponse.addProperty("isSuma", parameter.isSuma());
                     }
                     break;
                 }else{                
@@ -244,7 +261,8 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                         if(validCell){
                             success = true;
                             jResponse.addProperty("labelCell", parameter.getNombreColumna());
-                            jResponse.addProperty("valueCell", valueCell);                         
+                            jResponse.addProperty("valueCell", valueCell);
+                            jResponse.addProperty("isSuma", parameter.isSuma());                           
                         }
                         break;
                     }                                    
@@ -253,11 +271,11 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         }         
         jResponse.addProperty("success", success);        
         return jResponse;
-    }
-        
+    }    
+    //6 Get amount table
     
     //-----------------------------------------------------------Validations
-    //1 Validation Excel 
+    //Validation Excel 
     public void validExcel_Sheet(XSSFWorkbook workbook, Formato format) {
         int countSheetValid = 0;
         JsonArray formatSheets = new JsonParser().parse(format.getDetalleHoja()).getAsJsonArray();
@@ -268,21 +286,14 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     countSheetValid++;
                     break;
                 }
-                
-                else if(workbook.getSheetName(j).equalsIgnoreCase("Mozart Reports")){
-                    countSheetValid++;
-                    break;
-                }
             }
-        }
-        
+        }        
         if(countSheetValid != formatSheets.size() ||  workbook.getNumberOfSheets() != formatSheets.size()){
             validExcel = false;
             msjValidExcel = Mensajes.M_INVALID_EXCEL;            
         }
-
     }    
-    //2 Validation Data
+    //Validation Data
     public boolean validData_EmptyOrRegex(Cell cell, DetalleFormato parameter, String value) {
         
         boolean response = true;
@@ -313,121 +324,22 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         }                
         return response;
     }        
-    //3 Validate Amount 
+    //Validate Amount Total 
+    private void validData_TotalAmount(int position, Row row, JsonObject rowOut, double sumaTabla){        
+        int cellPosition  = rowOut.get("cellPosition").getAsInt();        
+        double total = rowOut.getAsJsonObject("data").get("total").getAsDouble();               
+        Cell cell = row.getCell(cellPosition);
+        if(sumaTabla == total){
+            //System.out.println("HOJA:"+ (position+1) +"TOTAL CORRECTO");
+        }else{
+            cell.setCellStyle(styleCellObservation(workbook));
+            cell.setCellComment(getComentario(cell, Mensajes.M_INVALIDA_TOTAL));                
+            validData = false;            
+            //System.out.println("HOJA:"+ (position+1) +"TOTAL INCORRECTO");
+        }
+    }    
+    //Validate Amount Subtotal     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    public JsonObject getSheet4(XSSFSheet sheet, Formato formato, JsonObject sheetParam){
-//        JsonObject jResponse = new JsonObject();
-//        JsonObject data = new JsonObject();
-//        boolean formatValid = true;
-//        
-//        if(sheetParam.get("status").getAsBoolean()){          
-//                        
-//            int initTable = sheetParam.get("initRow").getAsInt();
-//            int finTable = sheetParam.get("finRow").getAsInt();
-//            int subtotal = sheetParam.get("subtotalRow").getAsInt();
-//            int total = sheetParam.get("totalRow").getAsInt();            
-//            
-//            Iterator<Row> rowIterator = sheet.iterator();  
-//            Row row;            
-//            while (rowIterator.hasNext()) {
-//                JsonObject result = new JsonObject();
-//                
-//                row = rowIterator.next();
-//                               
-//                if (row.getRowNum() >= initTable && row.getRowNum() <= finTable) {
-//                    Iterator<Cell> cellIterator = row.cellIterator();  
-//                    Cell cell;
-//                    while (cellIterator.hasNext()) {
-//                        cell = cellIterator.next();
-//                        String valueCell = getValueCell(cell);
-//                        System.out.println("value:"+valueCell);
-//                        
-//                    }
-//                    
-//                    
-//                    
-//                }
-//                
-//            
-//            }
-//            
-//        }
-//        
-//
-//        
-//        
-//
-//        JsonObject jDataSheet = new JsonObject();
-//
-//        return jResponse;
-//    }         
-//    public JsonObject getSheet1(XSSFSheet sheet, Formato formato){
-//        JsonObject jResponse = new JsonObject();
-//        JsonObject data = new JsonObject();
-//        boolean success = true;
-//        
-//        for (DetalleFormato parameter : formato.getDetalle()) {
-//            if(parameter.getType() == Validaciones.FORMAT_READER){ 
-//                Row rowParameter = sheet.getRow(parameter.getFilaExcel());
-//                Cell cellParameter = rowParameter.getCell(parameter.getColumnaExcel());
-//                String valueCell = getValueCell(cellParameter);
-//                data.addProperty(parameter.getNombreColumna(), valueCell);
-//
-//                if(validateEmptyOrRegex(cellParameter, parameter, valueCell)){
-//                    
-//                }else{
-//                    validData = false;
-//                }                
-//            }
-//        }                
-//        jResponse.add("data", data);
-//        jResponse.addProperty("success", success);
-//        return jResponse;
-//    }    
-//    public JsonObject getSheet2(Formato formato, JsonObject formatSheet, int position){
-//        JsonObject jResponse = new JsonObject();
-//        
-//        return jResponse;
-//    }
-//    public JsonObject getSheet3(Formato formato, JsonObject formatSheet, int position){
-//        JsonObject jResponse = new JsonObject();
-//        
-//        return jResponse;
-//    }       
 
-    
-    
+
 }

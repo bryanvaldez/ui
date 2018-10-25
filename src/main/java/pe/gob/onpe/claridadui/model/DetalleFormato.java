@@ -23,11 +23,14 @@ public class DetalleFormato {
     private int orden;
     private int procesoDetalle;
     private int tipoDato;
+    private boolean suma;
 
     public DetalleFormato() {
     }
 
-    public DetalleFormato(int hojaExcel, int columnaExcel, int filaExcel, String nombreColumna, String validacion, String mensajeValidacion, String comentario, int unico, int obligatorio, int orden, int proceso, int tipo) {
+    public DetalleFormato(int hojaExcel, int columnaExcel, int filaExcel, String nombreColumna, 
+                            String validacion, String mensajeValidacion, String comentario, int unico, 
+                            int obligatorio, int orden, int proceso, int tipo, boolean suma) {
         this.hojaExcel = hojaExcel;
         this.columnaExcel = columnaExcel;
         this.filaExcel = filaExcel;
@@ -40,6 +43,7 @@ public class DetalleFormato {
         this.orden = orden;
         this.procesoDetalle = proceso;
         this.tipoDato = tipo;
+        this.suma = suma;
     }
     
     public int getId() {
@@ -144,6 +148,14 @@ public class DetalleFormato {
 
     public void setTipoDato(int tipoDato) {
         this.tipoDato = tipoDato;
+    }
+
+    public boolean isSuma() {
+        return suma;
+    }
+
+    public void setSuma(boolean suma) {
+        this.suma = suma;
     }
 
 }
