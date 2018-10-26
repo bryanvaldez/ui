@@ -91,6 +91,8 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             jResponse = validFormat5(formato, formatSheets, coordinates, position);
         }else if(formato.getId() == FormatoEnum.FORMATO_6.getId()){
             jResponse = validFormat6(formato, formatSheets, coordinates, position);            
+        }else{
+            return formatSheets;
         }        
         return jResponse;        
     }    
