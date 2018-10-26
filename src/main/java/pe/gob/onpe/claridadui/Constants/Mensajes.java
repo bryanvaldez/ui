@@ -12,7 +12,7 @@ package pe.gob.onpe.claridadui.Constants;
 public class Mensajes {
     
     public static final String M_INVALID_EXCEL = "Formato Incorrecto.";  
-    public static final String M_INVALIDA_TOTAL = "El monto total no coincide con los registros ingresados."; 
+    public static final String M_INVALID_AMOUNT = "El monto no coincide con la suma de los registros ingresados."; 
     
     public static final String I_MONTO = "Sólo se permiten números. (Máximo 2 decimales).";   
     public static final String I_FECHA = "Formato de fecha incorrecta.";       
