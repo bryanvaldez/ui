@@ -67,7 +67,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     private JsonArray getSheetsData(Formato formato){        
         JsonArray jResponse = new JsonArray();         
         JsonObject jSheetData;             
-        JsonArray formatSheets = new JsonParser().parse(formato.getDetalleHoja()).getAsJsonArray();         
+        JsonArray formatSheets = new JsonParser().parse(formato.getDetalleHoja()).getAsJsonArray(); 
         formatSheets =  getSheetValidIndex(formato, formatSheets, 0);        
         for (int i = formatSheets.size()-1; i >=0 ; i--) {
             JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();  
@@ -82,7 +82,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     }       
     //2 Get Sheet Cordinates
     private JsonArray getSheetValidIndex(Formato formato, JsonArray formatSheets, int sheetIndex){        
-        JsonArray jResponse = new JsonArray();        
+        JsonArray jResponse;        
         XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
         JsonObject formatSheet = formatSheets.get(sheetIndex).getAsJsonObject();
         int position = formatSheet.get("hoja").getAsInt()-1;
@@ -92,7 +92,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         }else if(formato.getId() == FormatoEnum.FORMATO_6.getId()){
             jResponse = validFormat6(formato, formatSheets, coordinates, position);            
         }else{
-            return formatSheets;
+            jResponse = formatSheets;
         }        
         return jResponse;        
     }    
@@ -167,6 +167,8 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         
         JsonObject jResponse = new JsonObject();        
         JsonArray jdata = new JsonArray();
+        JsonArray subTotal = new JsonArray();
+        JsonArray total = new JsonArray();
         XSSFSheet sheet = workbook.getSheetAt(position);
                 
         double sumCol1 = 0, sumCol2= 0;
@@ -195,18 +197,22 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 }else if(row.getRowNum() == rowSubtotal && rowSubtotal>0){  //Data Subtotal
                     rowOut = getRowIterator(formato, position, row, Validaciones.T_SUBTOTAL);
                     if(rowOut.get("success").getAsBoolean()){
+                        subTotal.add(rowOut.getAsJsonObject("data"));
                         validData_SubTotal(row, rowOut, sumCol1, sumCol2);                     
                     }                      
                 }else if(row.getRowNum() == rowTotal && rowTotal>0){  //Data Total
                     rowOut = getRowIterator(formato, position, row, Validaciones.T_TOTAL);
                     if(rowOut.get("success").getAsBoolean()){
+                        total.add(rowOut.getAsJsonObject("data"));
                         validData_Total(row, rowOut, sumCol1, sumCol2);
                     }                      
                 }                
             }            
         }        
                       
-        jResponse.add("data", jdata);         
+        jResponse.add("data", jdata);
+        jResponse.add("subTotal", subTotal);
+        jResponse.add("total", total);
         jResponse.addProperty("formato", sheet.getSheetName()); 
         return jResponse;       
     }    
@@ -296,17 +302,10 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         double response = 0;                
         JsonArray aAmounts = rowOut.getAsJsonArray("amount");                        
         for (int i = 0; i < aAmounts.size(); i++) {
-            JsonObject amount = aAmounts.get(i).getAsJsonObject();
-            
+            JsonObject amount = aAmounts.get(i).getAsJsonObject();            
             if(position == amount.get("group").getAsInt()){
                 response = amount.get("monto").getAsDouble();
-            }
-            
-//            if(i==position-1){
-//                response = amount.get("monto").getAsDouble();
-//            }else if(i ==position-1){
-//                response = amount.get("monto").getAsDouble();
-//            }                          
+            }                         
         }                   
         return response;
     }
@@ -395,6 +394,19 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             validData = false; 
         }
     }        
+    //Validate Amount sheet
+//    private void validData_AmountSheetTotal(JsonArray formatSheets){
+//        
+//        for (int i = formatSheets.size()-1; i >=0 ; i--) {
+//            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();  
+//            int position = formatSheet.get("hoja").getAsInt()-1;
+//            XSSFSheet sheet = workbook.getSheetAt(position);
+//            JsonObject coordinates = getCoordinates(sheet, formato, formatSheet);
+//            jSheetData = getTableIterator(formato, coordinates, position);
+//            System.out.println("Hoja" +  position);
+//            jResponse.add(jSheetData);                          
+//        }         
+//    } 
     
     //-----------------------------------------------------------CUSTOM VALIDATION       
     private JsonArray validFormat5(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
@@ -463,10 +475,5 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         }        
         return jResponse; 
     }    
-    
-    
-    private void validIndex(){
-    
-    }
     
 }
