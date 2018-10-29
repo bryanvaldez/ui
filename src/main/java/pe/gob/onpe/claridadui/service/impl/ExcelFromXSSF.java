@@ -68,7 +68,11 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         JsonArray jResponse = new JsonArray();         
         JsonObject jSheetData;             
         JsonArray formatSheets = new JsonParser().parse(formato.getDetalleHoja()).getAsJsonArray(); 
-        formatSheets =  getSheetValidIndex(formato, formatSheets, 0);        
+        
+        JsonObject formatsSheetsValid = getSheetValidIndex(formato, formatSheets, 0);
+        indexData = formatsSheetsValid.get("dataIndex").getAsJsonObject();
+        formatSheets =  formatsSheetsValid.get("formatSheets").getAsJsonArray();            
+        
         for (int i = formatSheets.size()-1; i >=0 ; i--) {
             JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();  
             int position = formatSheet.get("hoja").getAsInt()-1;
@@ -77,12 +81,14 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             jSheetData = getTableIterator(formato, coordinates, position);
             System.out.println("Hoja" +  position);
             jResponse.add(jSheetData);                          
-        }        
+        }    
+
+        jResponse.add(indexData);        
         return jResponse;
     }       
     //2 Get Sheet Cordinates
-    private JsonArray getSheetValidIndex(Formato formato, JsonArray formatSheets, int sheetIndex){        
-        JsonArray jResponse;        
+    private JsonObject getSheetValidIndex(Formato formato, JsonArray formatSheets, int sheetIndex){        
+        JsonObject jResponse = new JsonObject();  
         XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
         JsonObject formatSheet = formatSheets.get(sheetIndex).getAsJsonObject();
         int position = formatSheet.get("hoja").getAsInt()-1;
@@ -91,8 +97,6 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             jResponse = validFormat5(formato, formatSheets, coordinates, position);
         }else if(formato.getId() == FormatoEnum.FORMATO_6.getId()){
             jResponse = validFormat6(formato, formatSheets, coordinates, position);            
-        }else{
-            jResponse = formatSheets;
         }        
         return jResponse;        
     }    
@@ -102,6 +106,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         boolean success = true;        
         Iterator<Row> rowIterator = sheet.iterator();
           
+        boolean isIndex = formatSheet.get("isIndex").getAsBoolean();
         String initTable = formatSheet.get("iniTabla").getAsString();
         String subTotalTable = formatSheet.get("subtotal").getAsString();
         String totalTable = formatSheet.get("total").getAsString();        
@@ -155,6 +160,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             success = false;
         }        
                 
+        jResponse.addProperty("isIndex", isIndex);        
         jResponse.addProperty("initRow", initRow);
         jResponse.addProperty("finRow", finRow);
         jResponse.addProperty("subtotalRow", subtotalRow);
@@ -170,14 +176,18 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         JsonArray subTotal = new JsonArray();
         JsonArray total = new JsonArray();
         XSSFSheet sheet = workbook.getSheetAt(position);
+        String formatName = sheet.getSheetName();
                 
         double sumCol1 = 0, sumCol2= 0;
         
-        if(coordinates.get("status").getAsBoolean()){                                  
+        if(coordinates.get("status").getAsBoolean()){ 
+            //int position = coordinates.get("hoja").getAsInt()-1;
             int rowInitTable = coordinates.get("initRow").getAsInt();
             int rowFinTable = coordinates.get("finRow").getAsInt();
             int rowSubtotal = coordinates.get("subtotalRow").getAsInt();
-            int rowTotal = coordinates.get("totalRow").getAsInt();    
+            int rowTotal = coordinates.get("totalRow").getAsInt();  
+            boolean isIndex = coordinates.get("isIndex").getAsBoolean();
+            
             Iterator<Row> rowIterator = sheet.iterator();  
             Row row;            
             while (rowIterator.hasNext()) {               
@@ -186,10 +196,14 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 if (row.getRowNum() >= rowInitTable && row.getRowNum() <= rowFinTable) { //Data Table
                     rowOut = getRowIterator(formato, position, row, Validaciones.T_TABLE);                                        
                     if(rowOut.get("success").getAsBoolean()){        
-                        jdata.add(rowOut.getAsJsonObject("data"));
-                        
+                        jdata.add(rowOut.getAsJsonObject("data"));                        
                         sumCol1+= getRowAmount(rowOut, 1); 
                         sumCol2+= getRowAmount(rowOut, 2);
+                        
+                        
+
+                        //validData_MatchIndex(row, rowOut, isIndex);
+                        
                         
                         //CUSTOM VALIDATION -- COLOCAR AQUI VALIDACIONES ADICIONALES
                         
@@ -213,7 +227,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         jResponse.add("data", jdata);
         jResponse.add("subTotal", subTotal);
         jResponse.add("total", total);
-        jResponse.addProperty("formato", sheet.getSheetName()); 
+        jResponse.addProperty("formato", formatName); 
         return jResponse;       
     }    
     //5 Step
@@ -395,22 +409,22 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         }
     }        
     //Validate Amount sheet
-//    private void validData_AmountSheetTotal(JsonArray formatSheets){
-//        
-//        for (int i = formatSheets.size()-1; i >=0 ; i--) {
-//            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();  
-//            int position = formatSheet.get("hoja").getAsInt()-1;
-//            XSSFSheet sheet = workbook.getSheetAt(position);
-//            JsonObject coordinates = getCoordinates(sheet, formato, formatSheet);
-//            jSheetData = getTableIterator(formato, coordinates, position);
-//            System.out.println("Hoja" +  position);
-//            jResponse.add(jSheetData);                          
-//        }         
-//    } 
+    private void validData_MatchIndex(Row row, JsonObject rowOut, boolean isIndex){
+              
+        if(isIndex){
+            if(!indexData.entrySet().isEmpty()){
+                System.out.println("pe.gob.onpe.claridadui.service.impl.ExcelFromXSSF.validData_MatchIndex()");
+                
+            }
+
+        
+        }        
+    }
     
     //-----------------------------------------------------------CUSTOM VALIDATION       
-    private JsonArray validFormat5(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
-        JsonArray jResponse = new JsonArray();        
+    private JsonObject validFormat5(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
+        JsonObject jResponse = new JsonObject();
+        JsonArray jFormatSheets = new JsonArray();        
         JsonObject jSheetData = getTableIterator(formato, coordinates, position);
         JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
         boolean is5A = false, is5B = false, is5C = false;
@@ -431,19 +445,23 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             JsonObject temp = formatSheets.get(i).getAsJsonObject();
             String desc = temp.get("descripcion").getAsString(); 
             if(desc.equalsIgnoreCase("Formato-5")){
-                jResponse.add(temp);
+               //jFormatSheets.add(temp);
             }else if(desc.equalsIgnoreCase("Anexo-5A") && is5A){
-                jResponse.add(temp);
+                jFormatSheets.add(temp);
             }else if(desc.equalsIgnoreCase("Anexo-5B") && is5B){
-                jResponse.add(temp);
+                jFormatSheets.add(temp);
             }else if(desc.equalsIgnoreCase("Anexo-5C") && is5C){
-                jResponse.add(temp);
+                jFormatSheets.add(temp);
             }                
         }        
+        
+        jResponse.add("formatSheets", jFormatSheets);
+        jResponse.add("dataIndex", jSheetData);
         return jResponse; 
     }    
-    private JsonArray validFormat6(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
-        JsonArray jResponse = new JsonArray();        
+    private JsonObject validFormat6(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
+        JsonObject jResponse = new JsonObject();
+        JsonArray jFormatSheets = new JsonArray();        
         JsonObject jSheetData = getTableIterator(formato, coordinates, position);
         JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
         boolean is6A = false, is6B = false, is6C = false;
@@ -464,16 +482,18 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             JsonObject temp = formatSheets.get(i).getAsJsonObject();
             String desc = temp.get("descripcion").getAsString(); 
             if(desc.equalsIgnoreCase("Formato-6")){
-                jResponse.add(temp);
+                //jResponse.add(temp);
             }else if(desc.equalsIgnoreCase("Anexo-6A") && is6A){
-                jResponse.add(temp);
+                jFormatSheets.add(temp);
             }else if(desc.equalsIgnoreCase("Anexo-6B") && is6B){
-                jResponse.add(temp);
+                jFormatSheets.add(temp);
             }else if(desc.equalsIgnoreCase("Anexo-6C") && is6C){
-                jResponse.add(temp);
+                jFormatSheets.add(temp);
             }                
         }        
-        return jResponse; 
+        jResponse.add("formatSheets", jFormatSheets);
+        jResponse.add("dataIndex", jSheetData);
+        return jResponse;  
     }    
     
 }

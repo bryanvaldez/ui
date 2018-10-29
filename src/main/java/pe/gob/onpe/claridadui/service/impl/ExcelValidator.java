@@ -5,6 +5,8 @@
  */
 package pe.gob.onpe.claridadui.service.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -32,6 +34,8 @@ public class ExcelValidator extends ExcelUtil{
     public String msjValidExcel = "";
     public String msjValidData = "";
     
+    public JsonObject indexData = new JsonObject();
+        
     public static final String PATH_OBSERVATION_INCOME = "D:\\CLARIDAD3\\OBSERVACIONES\\INGRESOS\\prueba.xlsx";
     public static final String PATH_OBSERVATION_EXPENSES = "D:\\CLARIDAD3\\OBSERVACIONES\\GASTOS\\prueba.xlsx";
     

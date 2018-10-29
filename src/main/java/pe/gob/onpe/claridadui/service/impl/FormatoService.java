@@ -69,28 +69,28 @@ public class FormatoService implements IFormatoService {
             JsonObject hoja4 = new JsonObject();
 
             hoja1.addProperty("hoja", 1);
-            hoja1.addProperty("index", true);
+            hoja1.addProperty("isIndex", true);
             hoja1.addProperty("descripcion", "Formato-5");            
             hoja1.addProperty("iniTabla", "TOTAL S/");
             hoja1.addProperty("subtotal", "");
             hoja1.addProperty("total", "TOTAL INGRESOS DE CAMPAÑA");
             
             hoja2.addProperty("hoja", 2);
-            hoja1.addProperty("index", false);
+            hoja2.addProperty("isIndex", false);
             hoja2.addProperty("descripcion", "Anexo-5A");
             hoja2.addProperty("iniTabla", "Apellido Paterno");
             hoja2.addProperty("subtotal", "SUBTOTALES");
             hoja2.addProperty("total", "TOTAL INGRESOS"); 
             
             hoja3.addProperty("hoja", 3);
-            hoja1.addProperty("index", false);
+            hoja3.addProperty("isIndex", false);
             hoja3.addProperty("descripcion", "Anexo-5B");
             hoja3.addProperty("iniTabla", "Fecha de la actividad");
             hoja3.addProperty("subtotal", "");
             hoja3.addProperty("total", "TOTAL INGRESOS");
             
             hoja4.addProperty("hoja", 4);
-            hoja1.addProperty("index", false);
+            hoja4.addProperty("isIndex", false);
             hoja4.addProperty("descripcion", "Anexo-5C");
             hoja4.addProperty("iniTabla", "Fecha del ingreso");
             hoja4.addProperty("subtotal", "");
@@ -108,28 +108,28 @@ public class FormatoService implements IFormatoService {
             JsonObject hoja4 = new JsonObject();
 
             hoja1.addProperty("hoja", 1);
-            hoja1.addProperty("index", true);
+            hoja1.addProperty("isIndex", true);
             hoja1.addProperty("descripcion", "Formato-6");
             hoja1.addProperty("iniTabla", "TOTAL S/");
             hoja1.addProperty("subtotal", "");
             hoja1.addProperty("total", "TOTAL GASTOS DE CAMPAÑA");            
             
             hoja2.addProperty("hoja", 2);
-            hoja1.addProperty("index", false);
+            hoja2.addProperty("isIndex", false);
             hoja2.addProperty("descripcion", "Anexo-6A");
             hoja2.addProperty("iniTabla", "Monto  S/.");
             hoja2.addProperty("subtotal", "");
             hoja2.addProperty("total", "TOTAL");            
             
             hoja3.addProperty("hoja", 3);
-            hoja1.addProperty("index", false);
+            hoja3.addProperty("isIndex", false);
             hoja3.addProperty("descripcion", "Anexo-6B");
             hoja3.addProperty("iniTabla", "Monto S/");
             hoja3.addProperty("subtotal", "");
             hoja3.addProperty("total", "TOTAL");            
             
             hoja4.addProperty("hoja", 4);
-            hoja1.addProperty("index", false);
+            hoja4.addProperty("isIndex", false);
             hoja4.addProperty("descripcion", "Anexo-6C");
             hoja4.addProperty("iniTabla", "Monto S/");
             hoja4.addProperty("subtotal", "");
