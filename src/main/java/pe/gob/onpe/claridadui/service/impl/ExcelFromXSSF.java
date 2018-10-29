@@ -99,7 +99,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         if(formato.getId() == FormatoEnum.FORMATO_5.getId()){
             jResponse = validFormat5(formato, jCordinates, jSheetIndexData);
         }else if(formato.getId() == FormatoEnum.FORMATO_6.getId()){
-            //jResponse = validFormat6(formato, formatSheets, coordinates, position);            
+            jResponse = validFormat6(formato, jCordinates, jSheetIndexData);            
         }        
         return jResponse;        
     }    
@@ -216,21 +216,15 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(rowOut.get("success").getAsBoolean()){        
                         jdata.add(rowOut.getAsJsonObject("data"));                        
                         sumCol1+= getRowAmount(rowOut, 1); 
-                        sumCol2+= getRowAmount(rowOut, 2);
-                        
-                        
-
-                        //validData_MatchIndex(row, rowOut, isIndex);
-                        
-                        
+                        sumCol2+= getRowAmount(rowOut, 2);                        
+                        System.out.println("Hoja Tabla:   "+position+  "| "+jdata);
                         //CUSTOM VALIDATION -- COLOCAR AQUI VALIDACIONES ADICIONALES
-                        
                     }                    
                 }else if(row.getRowNum() == rowSubtotal && rowSubtotal>0){  //Data Subtotal
                     rowOut = getRowIterator(formato, position, row, Validaciones.T_SUBTOTAL);
                     if(rowOut.get("success").getAsBoolean()){
                         subTotal.add(rowOut.getAsJsonObject("data"));
-                        validData_SubTotal(row, rowOut, sumCol1, sumCol2);                     
+                        validData_SubTotal(row, rowOut, sumCol1, sumCol2);         
                     }                      
                 }else if(row.getRowNum() == rowTotal && rowTotal>0){  //Data Total
                     rowOut = getRowIterator(formato, position, row, Validaciones.T_TOTAL);
@@ -240,8 +234,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     }                      
                 }                
             }            
-        }        
-                      
+        }                              
         jResponse.add("data", jdata);
         jResponse.add("subTotal", subTotal);
         jResponse.add("total", total);
@@ -426,28 +419,29 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             validData = false; 
         }
     }        
-    //Validate Amount sheet
-    private void validData_MatchIndex(Row row, JsonObject rowOut, boolean isIndex){
-                 
-    }
-    
-    //-----------------------------------------------------------CUSTOM VALIDATION       
+
+    //-----------------------------------------------------------CUSTOM VALIDATION INDEX 
     private JsonObject validFormat5(Formato formato, JsonArray jCordinates, JsonObject jSheetIndexData){        
         JsonObject jResponse = new JsonObject();
         JsonArray jResponseCoordinates = new JsonArray();        
         JsonArray sheetsActive = jSheetIndexData.get("data").getAsJsonArray();     
         boolean is5A = false, is5B = false, is5C = false;
+        double TotalIndex5A = 0, TotalIndex5B = 0, TotalIndex5C = 0;
+        double Total5A = 0, Total5B = 0, Total5C = 0;
 
         for (int i = 0; i < sheetsActive.size(); i++) {
             JsonObject sheetActive = sheetsActive.get(i).getAsJsonObject();                
             if(!is5A){
                 is5A = sheetActive.get("5A") != null;
+                if(is5A){TotalIndex5A = sheetActive.get("5A").getAsDouble();}
             }
             if(!is5B){
                 is5B = sheetActive.get("5B") != null;
+                if(is5B){TotalIndex5A = sheetActive.get("5B").getAsDouble();}
             }
             if(!is5C){
                 is5C = sheetActive.get("5C") != null;
+                if(is5C){TotalIndex5A = sheetActive.get("5C").getAsDouble();}
             }                 
         }               
         
@@ -458,141 +452,158 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                //jFormatSheets.add(temp);
             }else if(sheetPosition == 2 && is5A){
                 jResponseCoordinates.add(jCordinate);
+                Total5A = getTotalBySheet(formato, jCordinate);
             }else if(sheetPosition == 3 && is5B){
                 jResponseCoordinates.add(jCordinate);
+                Total5B = getTotalBySheet(formato, jCordinate);
             }else if(sheetPosition == 4 && is5C){
                 jResponseCoordinates.add(jCordinate);
+                Total5C = getTotalBySheet(formato, jCordinate);
             }                
-        }        
+        }                 
         
-//        for (int i = 0; i < jCordinates.size(); i++) {
-//            JsonObject jCordinate = jCordinates.get(i).getAsJsonObject();             
-//            if(jCordinate.get("status").getAsBoolean()){
-//                if(!jCordinate.get("isIndex").getAsBoolean()){ 
-//                    int position = jCordinate.get("hoja").getAsInt();
-//                    for (DetalleFormato parameter : formato.getDetalle()) {  
-//                        if(parameter.getHojaExcel() == position){
-//                            if(parameter.getTipoDato() == Validaciones.T_TOTAL){
-//
-//                            }                        
-//                        }
-//                    }                
-//                }                                
-//            }           
-//        }            
-        
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        if(is5A){
+            if(TotalIndex5A != Total5A){
+                Row rowTotal = sheet.getRow(10);
+                Cell cell = rowTotal.getCell(8); 
+                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
+                validData = false;                 
+            }
+        }
+        if(is5B){
+            if(TotalIndex5A != Total5A){
+                Row rowTotal = sheet.getRow(11);
+                Cell cell = rowTotal.getCell(8);   
+                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
+                validData = false;                 
+            }        
+        }
+        if(is5C){
+            if(TotalIndex5A != Total5A){
+                Row rowTotal = sheet.getRow(12);
+                Cell cell = rowTotal.getCell(8); 
+                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
+                validData = false;                 
+            }        
+        }
         
         jResponse.add("jCoordinates", jResponseCoordinates);  
         return jResponse; 
     }    
-//    private JsonObject validFormat6(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
-//        JsonObject jResponse = new JsonObject();
-//        JsonArray jFormatSheets = new JsonArray();        
-//        JsonObject jSheetData = getTableIterator(formato, coordinates, position);
-//        JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
-//        boolean is6A = false, is6B = false, is6C = false;
-//
-//        for (int i = 0; i < sheetCordinates.size(); i++) {
-//            JsonObject cordinate = sheetCordinates.get(i).getAsJsonObject();                
-//            if(!is6A){
-//                is6A = cordinate.get("6A") != null;
-//            }
-//            if(!is6B){
-//                is6B = cordinate.get("6B") != null;
-//            }
-//            if(!is6C){
-//                is6C = cordinate.get("6C") != null;
-//            }                 
-//        }               
-//        for (int i = 0; i < formatSheets.size(); i++) {
-//            JsonObject temp = formatSheets.get(i).getAsJsonObject();
-//            String desc = temp.get("descripcion").getAsString(); 
-//            if(desc.equalsIgnoreCase("Formato-6")){
-//                //jResponse.add(temp);
-//            }else if(desc.equalsIgnoreCase("Anexo-6A") && is6A){
-//                jFormatSheets.add(temp);
-//            }else if(desc.equalsIgnoreCase("Anexo-6B") && is6B){
-//                jFormatSheets.add(temp);
-//            }else if(desc.equalsIgnoreCase("Anexo-6C") && is6C){
-//                jFormatSheets.add(temp);
-//            }                
-//        }        
-//        jResponse.add("formatSheets", jFormatSheets);
-//        jResponse.add("dataIndex", jSheetData);
-//        return jResponse;  
-//    }    
-//    
+    private JsonObject validFormat6(Formato formato, JsonArray jCordinates, JsonObject jSheetIndexData){     
+        
+        JsonObject jResponse = new JsonObject();
+        JsonArray jResponseCoordinates = new JsonArray();        
+        JsonArray sheetsActive = jSheetIndexData.get("data").getAsJsonArray();     
+        boolean is6A = false, is6B = false, is6C = false;
+        double TotalIndex6A = 0, TotalIndex6B = 0, TotalIndex6C = 0;
+        double Total6A = 0, Total6B = 0, Total6C = 0;
+
+        for (int i = 0; i < sheetsActive.size(); i++) {
+            JsonObject sheetActive = sheetsActive.get(i).getAsJsonObject();                
+            if(!is6A){
+                is6A = sheetActive.get("6A") != null;
+                if(is6A){TotalIndex6A = sheetActive.get("6A").getAsDouble();}
+            }
+            if(!is6B){
+                is6B = sheetActive.get("6B") != null;
+                if(is6B){TotalIndex6A = sheetActive.get("6B").getAsDouble();}
+            }
+            if(!is6C){
+                is6C = sheetActive.get("6C") != null;
+                if(is6C){TotalIndex6A = sheetActive.get("6C").getAsDouble();}
+            }                 
+        }               
+        
+        for (int i = 0; i < jCordinates.size(); i++) {
+            JsonObject jCordinate = jCordinates.get(i).getAsJsonObject();
+            int sheetPosition = jCordinate.get("hoja").getAsInt(); 
+            if(sheetPosition == 1){
+               //jFormatSheets.add(temp);
+            }else if(sheetPosition == 2 && is6A){
+                jResponseCoordinates.add(jCordinate);
+                Total6A = getTotalBySheet(formato, jCordinate);
+            }else if(sheetPosition == 3 && is6B){
+                jResponseCoordinates.add(jCordinate);
+                Total6B = getTotalBySheet(formato, jCordinate);
+            }else if(sheetPosition == 4 && is6C){
+                jResponseCoordinates.add(jCordinate);
+                Total6C = getTotalBySheet(formato, jCordinate);
+            }                
+        }                 
+        
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        if(is6A){
+            if(TotalIndex6A != Total6A){
+                Row rowTotal = sheet.getRow(8);
+                Cell cell = rowTotal.getCell(7); 
+                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
+                validData = false;                 
+            }
+        }
+        if(is6B){
+            if(TotalIndex6A != Total6A){
+                Row rowTotal = sheet.getRow(9);
+                Cell cell = rowTotal.getCell(7);   
+                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
+                validData = false;                 
+            }        
+        }
+        if(is6C){
+            if(TotalIndex6A != Total6A){
+                Row rowTotal = sheet.getRow(10);
+                Cell cell = rowTotal.getCell(7); 
+                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
+                validData = false;                 
+            }        
+        }        
+        jResponse.add("jCoordinates", jResponseCoordinates);  
+        return jResponse;         
+
+    }        
+    private double getTotalBySheet(Formato formato, JsonObject jCordinate){
+        double amount = 0;
+        boolean success = true;
+                  
+        if(jCordinate.get("status").getAsBoolean()){
+            int hoja = jCordinate.get("hoja").getAsInt();
+            XSSFSheet sheet = workbook.getSheetAt(hoja-1);
+            int row = jCordinate.get("totalRow").getAsInt();
+            for (DetalleFormato parameter : formato.getDetalle()) {  
+                if(parameter.getHojaExcel() == hoja){
+                    if(parameter.getTipoDato() == Validaciones.T_TOTAL){                        
+                        Row rowTotal = sheet.getRow(row);
+                        Cell cell = rowTotal.getCell(parameter.getColumnaExcel()); 
+                        String valueCell= getValueCell(cell);
+                        String regex = "^\\d+(\\.\\d{1,2})?$";
+                        if(valueCell.equalsIgnoreCase("")){
+                            success = false;
+                        }else{
+                            if (!valueCell.matches(regex)) {
+                                success = false;
+                            }else{
+                                amount = Double.parseDouble(valueCell);
+                            }
+                        }
+                    }                        
+                }
+            }                                               
+        }           
+        return amount;
+    }    
     
+    //-----------------------------------------------------------CUSTOM VALIDATION  TABLE    
+    private void custom_ValidDataDate(){
     
-    //----------------------------------------------------------- TEST       
-//    private JsonArray validFormatDDDDDD(JsonObject jSheetDataIndex, JsonArray jSheetsTotals){        
-//        JsonArray jResponse = new JsonArray();    
-//        boolean is5A = false, is5B = false, is5C = false;   
-//        
-//        JsonArray jSheetDataIndexTotals = jSheetDataIndex.getAsJsonArray("data");
-//        
-//        for (int i = 0; i < jSheetDataIndexTotals.size(); i++) {
-//            JsonObject jIndexTotal = jSheetDataIndexTotals.get(i).getAsJsonObject(); 
-//            Set<Map.Entry<String, JsonElement>> entries = jIndexTotal.entrySet();            
-//            for (Map.Entry<String, JsonElement> entry: entries) {
-//                double value = entry.getValue().getAsDouble();
-//                String key = entry.getKey();                
-//                String[] keyParam = key.split("_");                
-//                int row = Integer.parseInt(keyParam[0]);
-//                int column = Integer.parseInt(keyParam[1]);
-//                String label = keyParam[2];  
-//                System.out.println(label);
-//                if(label.equalsIgnoreCase("5A")){is5A = true;}
-//                if(label.equalsIgnoreCase("5B")){is5B = true;}
-//                if(label.equalsIgnoreCase("5C")){is5C = true;}
-//            }              
-//        }
-//            
-//            System.out.println(is5A +"/"+ is5B +"/"+is5C);
-//        
-////        for (int i = 0; i < formatSheets.size(); i++) {
-////            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();            
-////            int position = formatSheet.get("hoja").getAsInt()-1;
-////            XSSFSheet sheet = workbook.getSheetAt(position);
-//////            JsonObject coordinates = getCoordinate(sheet, formato, formatSheet);            
-//////            
-//////            if(formatSheet.get("isIndex").getAsBoolean()){                        
-//////                jSheetData = getTableIterator(formato, coordinates, position); 
-//////                JsonArray sheetDataTable = jSheetData.get("data").getAsJsonArray();                
-////           
-//////            }else{
-//////            
-//////            }
-////                    
-////            
-////
-////            
-////            String desc = formatSheet.get("descripcion").getAsString(); 
-////            if(desc.equalsIgnoreCase("Formato-5")){                
-////                jResponse.add(formatSheet);
-////                
-////            }else if(desc.equalsIgnoreCase("Anexo-5A") && is5A){
-////                jResponse.add(formatSheet);
-////            }else if(desc.equalsIgnoreCase("Anexo-5B") && is5B){
-////                jResponse.add(formatSheet);
-////            }else if(desc.equalsIgnoreCase("Anexo-5C") && is5C){
-////                jResponse.add(formatSheet);
-////            }                
-////        }         
-////        
-//        
-//        //JsonObject jSheetData = getTableIterator(formato, coordinates, position);
-//        //JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
-//
-//
-//          
-//        
-//        
-//              
-//     
-//        return jResponse; 
-//    }     
-//    
+        
     
+    }
     
 }
