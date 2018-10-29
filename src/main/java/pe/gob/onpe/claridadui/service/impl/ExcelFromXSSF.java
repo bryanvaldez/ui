@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Iterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -197,14 +199,14 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         double sumCol1 = 0, sumCol2= 0;
         
         if(coordinate.get("status").getAsBoolean()){ 
-            int position = coordinate.get("hoja").getAsInt()-1;
+            int hoja = coordinate.get("hoja").getAsInt()-1;
             int rowInitTable = coordinate.get("initRow").getAsInt();
             int rowFinTable = coordinate.get("finRow").getAsInt();
             int rowSubtotal = coordinate.get("subtotalRow").getAsInt();
             int rowTotal = coordinate.get("totalRow").getAsInt();  
             boolean isIndex = coordinate.get("isIndex").getAsBoolean();
             
-            XSSFSheet sheet = workbook.getSheetAt(position);
+            XSSFSheet sheet = workbook.getSheetAt(hoja);
             formatName = sheet.getSheetName(); 
             Iterator<Row> rowIterator = sheet.iterator();  
             Row row;            
@@ -212,22 +214,23 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 row = rowIterator.next();                           
                 JsonObject rowOut;                                                                 
                 if (row.getRowNum() >= rowInitTable && row.getRowNum() <= rowFinTable) { //Data Table
-                    rowOut = getRowIterator(formato, position, row, Validaciones.T_TABLE);                                        
+                    rowOut = getRowIterator(formato, hoja, row, Validaciones.T_TABLE);                                        
                     if(rowOut.get("success").getAsBoolean()){        
                         jdata.add(rowOut.getAsJsonObject("data"));                        
                         sumCol1+= getRowAmount(rowOut, 1); 
                         sumCol2+= getRowAmount(rowOut, 2);                        
-                        System.out.println("Hoja Tabla:   "+position+  "| "+jdata);
+                        //System.out.println("Hoja Tabla:   "+hoja+  "| "+jdata);
+                        validCustom_Date(hoja, formato, jdata);
                         //CUSTOM VALIDATION -- COLOCAR AQUI VALIDACIONES ADICIONALES
                     }                    
                 }else if(row.getRowNum() == rowSubtotal && rowSubtotal>0){  //Data Subtotal
-                    rowOut = getRowIterator(formato, position, row, Validaciones.T_SUBTOTAL);
+                    rowOut = getRowIterator(formato, hoja, row, Validaciones.T_SUBTOTAL);
                     if(rowOut.get("success").getAsBoolean()){
                         subTotal.add(rowOut.getAsJsonObject("data"));
                         validData_SubTotal(row, rowOut, sumCol1, sumCol2);         
                     }                      
                 }else if(row.getRowNum() == rowTotal && rowTotal>0){  //Data Total
-                    rowOut = getRowIterator(formato, position, row, Validaciones.T_TOTAL);
+                    rowOut = getRowIterator(formato, hoja, row, Validaciones.T_TOTAL);
                     if(rowOut.get("success").getAsBoolean()){
                         total.add(rowOut.getAsJsonObject("data"));
                         validData_Total(row, rowOut, sumCol1, sumCol2);
@@ -600,9 +603,32 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     }    
     
     //-----------------------------------------------------------CUSTOM VALIDATION  TABLE    
-    private void custom_ValidDataDate(){
-    
+    private void validCustom_Date(int hoja, Formato formato, JsonArray jdata) {          
+        XSSFSheet sheet = workbook.getSheetAt(hoja);
+        Date date = new Date();
+      
+        int lastPosition = jdata.size()-1;
+        JsonObject jRowData = jdata.get(lastPosition).getAsJsonObject();  
+        boolean isDateValue = jRowData.get("fecAporte") != null;
         
+        try {
+            if(isDateValue){
+                date = df.parse(jRowData.get("fecAporte").getAsString());               
+                System.out.println("Hoja Tabla:   "+hoja+  "| Fecha:  "+date);            
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+ 
+ 
+        for (DetalleFormato parameter : formato.getDetalle()) { 
+            if(parameter.getHojaExcel() == hoja){
+            
+            }
+        
+        }
+
+        //System.out.println("Hoja Tabla:   "+hoja+  "| "+jdata);
     
     }
     
