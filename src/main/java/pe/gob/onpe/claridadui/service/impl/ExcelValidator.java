@@ -32,9 +32,7 @@ public class ExcelValidator extends ExcelUtil{
     public boolean validData = true;
     
     public String msjValidExcel = "";
-    public String msjValidData = "";
-    
-    public JsonObject indexData = new JsonObject();
+    public String msjValidData = "";    
         
     public static final String PATH_OBSERVATION_INCOME = "D:\\CLARIDAD3\\OBSERVACIONES\\INGRESOS\\prueba.xlsx";
     public static final String PATH_OBSERVATION_EXPENSES = "D:\\CLARIDAD3\\OBSERVACIONES\\GASTOS\\prueba.xlsx";

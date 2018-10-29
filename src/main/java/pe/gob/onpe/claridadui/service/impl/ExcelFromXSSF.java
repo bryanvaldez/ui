@@ -67,45 +67,61 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     private JsonArray getSheetsData(Formato formato){        
         JsonArray jResponse = new JsonArray();         
         JsonObject jSheetData;             
-        JsonArray formatSheets = new JsonParser().parse(formato.getDetalleHoja()).getAsJsonArray(); 
+        JsonArray formatSheets = new JsonParser().parse(formato.getDetalleHoja()).getAsJsonArray();
+        JsonArray jCordinates = getCoordinates(formatSheets); 
         
-        JsonObject formatsSheetsValid = getSheetValidIndex(formato, formatSheets, 0);
-        indexData = formatsSheetsValid.get("dataIndex").getAsJsonObject();
-        formatSheets =  formatsSheetsValid.get("formatSheets").getAsJsonArray();            
+        for (int i = 0; i < jCordinates.size(); i++) {
+            JsonObject jCordinate = jCordinates.get(i).getAsJsonObject();            
+            if(jCordinate.get("isIndex").getAsBoolean()){
+                jSheetData = getTableIterator(formato, jCordinate);
+                jResponse.add(jSheetData);                
+                JsonObject response = getSheetValidIndex(formato, jCordinates, jSheetData);                       
+                jCordinates =  response.get("jCoordinates").getAsJsonArray();                                 
+                System.out.println("Hoja: " +  (jCordinate.get("hoja").getAsInt()) +" | success");                
+            }
+        }
         
-        for (int i = formatSheets.size()-1; i >=0 ; i--) {
-            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();  
-            int position = formatSheet.get("hoja").getAsInt()-1;
-            XSSFSheet sheet = workbook.getSheetAt(position);
-            JsonObject coordinates = getCoordinates(sheet, formato, formatSheet);
-            jSheetData = getTableIterator(formato, coordinates, position);
-            System.out.println("Hoja" +  position);
-            jResponse.add(jSheetData);                          
-        }    
-
-        jResponse.add(indexData);        
+        for (int i = 0; i < jCordinates.size(); i++) {
+            JsonObject jCordinate = jCordinates.get(i).getAsJsonObject();            
+            if(!jCordinate.get("isIndex").getAsBoolean()){
+                jSheetData = getTableIterator(formato, jCordinate);
+                jResponse.add(jSheetData);
+                System.out.println("Hoja: " +  (jCordinate.get("hoja").getAsInt()) + " | success"); 
+            }
+        }        
+        
         return jResponse;
     }       
     //2 Get Sheet Cordinates
-    private JsonObject getSheetValidIndex(Formato formato, JsonArray formatSheets, int sheetIndex){        
+    private JsonObject getSheetValidIndex(Formato formato, JsonArray jCordinates, JsonObject jSheetIndexData){        
         JsonObject jResponse = new JsonObject();  
-        XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-        JsonObject formatSheet = formatSheets.get(sheetIndex).getAsJsonObject();
-        int position = formatSheet.get("hoja").getAsInt()-1;
-        JsonObject coordinates = getCoordinates(sheet, formato, formatSheet);        
+                            
         if(formato.getId() == FormatoEnum.FORMATO_5.getId()){
-            jResponse = validFormat5(formato, formatSheets, coordinates, position);
+            jResponse = validFormat5(formato, jCordinates, jSheetIndexData);
         }else if(formato.getId() == FormatoEnum.FORMATO_6.getId()){
-            jResponse = validFormat6(formato, formatSheets, coordinates, position);            
+            //jResponse = validFormat6(formato, formatSheets, coordinates, position);            
         }        
         return jResponse;        
     }    
     //3 Step
-    private JsonObject getCoordinates(XSSFSheet sheet, Formato formato, JsonObject formatSheet){
+    
+    private JsonArray getCoordinates(JsonArray formatSheets){
+        JsonArray jResponse = new JsonArray();         
+        for (int i = 0; i < formatSheets.size(); i++) {
+            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();
+            int position = formatSheet.get("hoja").getAsInt()-1;
+            XSSFSheet sheet = workbook.getSheetAt(position);           
+            jResponse.add(getCoordinate(sheet, formatSheet));
+        }                
+        return jResponse;
+    }    
+    
+    private JsonObject getCoordinate(XSSFSheet sheet, JsonObject formatSheet){
         JsonObject jResponse = new JsonObject();
         boolean success = true;        
         Iterator<Row> rowIterator = sheet.iterator();
           
+        int hoja = formatSheet.get("hoja").getAsInt();
         boolean isIndex = formatSheet.get("isIndex").getAsBoolean();
         String initTable = formatSheet.get("iniTabla").getAsString();
         String subTotalTable = formatSheet.get("subtotal").getAsString();
@@ -160,6 +176,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             success = false;
         }        
                 
+        jResponse.addProperty("hoja", hoja);
         jResponse.addProperty("isIndex", isIndex);        
         jResponse.addProperty("initRow", initRow);
         jResponse.addProperty("finRow", finRow);
@@ -169,25 +186,26 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         return jResponse;        
     } 
     //4 Step
-    private JsonObject getTableIterator(Formato formato, JsonObject coordinates, int position){    
+    private JsonObject getTableIterator(Formato formato, JsonObject coordinate){    
         
         JsonObject jResponse = new JsonObject();        
         JsonArray jdata = new JsonArray();
         JsonArray subTotal = new JsonArray();
-        JsonArray total = new JsonArray();
-        XSSFSheet sheet = workbook.getSheetAt(position);
-        String formatName = sheet.getSheetName();
+        JsonArray total = new JsonArray();        
+        String formatName = "";
                 
         double sumCol1 = 0, sumCol2= 0;
         
-        if(coordinates.get("status").getAsBoolean()){ 
-            //int position = coordinates.get("hoja").getAsInt()-1;
-            int rowInitTable = coordinates.get("initRow").getAsInt();
-            int rowFinTable = coordinates.get("finRow").getAsInt();
-            int rowSubtotal = coordinates.get("subtotalRow").getAsInt();
-            int rowTotal = coordinates.get("totalRow").getAsInt();  
-            boolean isIndex = coordinates.get("isIndex").getAsBoolean();
+        if(coordinate.get("status").getAsBoolean()){ 
+            int position = coordinate.get("hoja").getAsInt()-1;
+            int rowInitTable = coordinate.get("initRow").getAsInt();
+            int rowFinTable = coordinate.get("finRow").getAsInt();
+            int rowSubtotal = coordinate.get("subtotalRow").getAsInt();
+            int rowTotal = coordinate.get("totalRow").getAsInt();  
+            boolean isIndex = coordinate.get("isIndex").getAsBoolean();
             
+            XSSFSheet sheet = workbook.getSheetAt(position);
+            formatName = sheet.getSheetName(); 
             Iterator<Row> rowIterator = sheet.iterator();  
             Row row;            
             while (rowIterator.hasNext()) {               
@@ -410,90 +428,171 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     }        
     //Validate Amount sheet
     private void validData_MatchIndex(Row row, JsonObject rowOut, boolean isIndex){
-              
-        if(isIndex){
-            if(!indexData.entrySet().isEmpty()){
-                System.out.println("pe.gob.onpe.claridadui.service.impl.ExcelFromXSSF.validData_MatchIndex()");
-                
-            }
-
-        
-        }        
+                 
     }
     
     //-----------------------------------------------------------CUSTOM VALIDATION       
-    private JsonObject validFormat5(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
+    private JsonObject validFormat5(Formato formato, JsonArray jCordinates, JsonObject jSheetIndexData){        
         JsonObject jResponse = new JsonObject();
-        JsonArray jFormatSheets = new JsonArray();        
-        JsonObject jSheetData = getTableIterator(formato, coordinates, position);
-        JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
+        JsonArray jResponseCoordinates = new JsonArray();        
+        JsonArray sheetsActive = jSheetIndexData.get("data").getAsJsonArray();     
         boolean is5A = false, is5B = false, is5C = false;
 
-        for (int i = 0; i < sheetCordinates.size(); i++) {
-            JsonObject cordinate = sheetCordinates.get(i).getAsJsonObject();                
+        for (int i = 0; i < sheetsActive.size(); i++) {
+            JsonObject sheetActive = sheetsActive.get(i).getAsJsonObject();                
             if(!is5A){
-                is5A = cordinate.get("5A") != null;
+                is5A = sheetActive.get("5A") != null;
             }
             if(!is5B){
-                is5B = cordinate.get("5B") != null;
+                is5B = sheetActive.get("5B") != null;
             }
             if(!is5C){
-                is5C = cordinate.get("5C") != null;
+                is5C = sheetActive.get("5C") != null;
             }                 
         }               
-        for (int i = 0; i < formatSheets.size(); i++) {
-            JsonObject temp = formatSheets.get(i).getAsJsonObject();
-            String desc = temp.get("descripcion").getAsString(); 
-            if(desc.equalsIgnoreCase("Formato-5")){
+        
+        for (int i = 0; i < jCordinates.size(); i++) {
+            JsonObject jCordinate = jCordinates.get(i).getAsJsonObject();
+            int sheetPosition = jCordinate.get("hoja").getAsInt(); 
+            if(sheetPosition == 1){
                //jFormatSheets.add(temp);
-            }else if(desc.equalsIgnoreCase("Anexo-5A") && is5A){
-                jFormatSheets.add(temp);
-            }else if(desc.equalsIgnoreCase("Anexo-5B") && is5B){
-                jFormatSheets.add(temp);
-            }else if(desc.equalsIgnoreCase("Anexo-5C") && is5C){
-                jFormatSheets.add(temp);
+            }else if(sheetPosition == 2 && is5A){
+                jResponseCoordinates.add(jCordinate);
+            }else if(sheetPosition == 3 && is5B){
+                jResponseCoordinates.add(jCordinate);
+            }else if(sheetPosition == 4 && is5C){
+                jResponseCoordinates.add(jCordinate);
             }                
         }        
         
-        jResponse.add("formatSheets", jFormatSheets);
-        jResponse.add("dataIndex", jSheetData);
+//        for (int i = 0; i < jCordinates.size(); i++) {
+//            JsonObject jCordinate = jCordinates.get(i).getAsJsonObject();             
+//            if(jCordinate.get("status").getAsBoolean()){
+//                if(!jCordinate.get("isIndex").getAsBoolean()){ 
+//                    int position = jCordinate.get("hoja").getAsInt();
+//                    for (DetalleFormato parameter : formato.getDetalle()) {  
+//                        if(parameter.getHojaExcel() == position){
+//                            if(parameter.getTipoDato() == Validaciones.T_TOTAL){
+//
+//                            }                        
+//                        }
+//                    }                
+//                }                                
+//            }           
+//        }            
+        
+        
+        jResponse.add("jCoordinates", jResponseCoordinates);  
         return jResponse; 
     }    
-    private JsonObject validFormat6(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
-        JsonObject jResponse = new JsonObject();
-        JsonArray jFormatSheets = new JsonArray();        
-        JsonObject jSheetData = getTableIterator(formato, coordinates, position);
-        JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
-        boolean is6A = false, is6B = false, is6C = false;
-
-        for (int i = 0; i < sheetCordinates.size(); i++) {
-            JsonObject cordinate = sheetCordinates.get(i).getAsJsonObject();                
-            if(!is6A){
-                is6A = cordinate.get("6A") != null;
-            }
-            if(!is6B){
-                is6B = cordinate.get("6B") != null;
-            }
-            if(!is6C){
-                is6C = cordinate.get("6C") != null;
-            }                 
-        }               
-        for (int i = 0; i < formatSheets.size(); i++) {
-            JsonObject temp = formatSheets.get(i).getAsJsonObject();
-            String desc = temp.get("descripcion").getAsString(); 
-            if(desc.equalsIgnoreCase("Formato-6")){
-                //jResponse.add(temp);
-            }else if(desc.equalsIgnoreCase("Anexo-6A") && is6A){
-                jFormatSheets.add(temp);
-            }else if(desc.equalsIgnoreCase("Anexo-6B") && is6B){
-                jFormatSheets.add(temp);
-            }else if(desc.equalsIgnoreCase("Anexo-6C") && is6C){
-                jFormatSheets.add(temp);
-            }                
-        }        
-        jResponse.add("formatSheets", jFormatSheets);
-        jResponse.add("dataIndex", jSheetData);
-        return jResponse;  
-    }    
+//    private JsonObject validFormat6(Formato formato, JsonArray formatSheets, JsonObject coordinates, int position ){        
+//        JsonObject jResponse = new JsonObject();
+//        JsonArray jFormatSheets = new JsonArray();        
+//        JsonObject jSheetData = getTableIterator(formato, coordinates, position);
+//        JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
+//        boolean is6A = false, is6B = false, is6C = false;
+//
+//        for (int i = 0; i < sheetCordinates.size(); i++) {
+//            JsonObject cordinate = sheetCordinates.get(i).getAsJsonObject();                
+//            if(!is6A){
+//                is6A = cordinate.get("6A") != null;
+//            }
+//            if(!is6B){
+//                is6B = cordinate.get("6B") != null;
+//            }
+//            if(!is6C){
+//                is6C = cordinate.get("6C") != null;
+//            }                 
+//        }               
+//        for (int i = 0; i < formatSheets.size(); i++) {
+//            JsonObject temp = formatSheets.get(i).getAsJsonObject();
+//            String desc = temp.get("descripcion").getAsString(); 
+//            if(desc.equalsIgnoreCase("Formato-6")){
+//                //jResponse.add(temp);
+//            }else if(desc.equalsIgnoreCase("Anexo-6A") && is6A){
+//                jFormatSheets.add(temp);
+//            }else if(desc.equalsIgnoreCase("Anexo-6B") && is6B){
+//                jFormatSheets.add(temp);
+//            }else if(desc.equalsIgnoreCase("Anexo-6C") && is6C){
+//                jFormatSheets.add(temp);
+//            }                
+//        }        
+//        jResponse.add("formatSheets", jFormatSheets);
+//        jResponse.add("dataIndex", jSheetData);
+//        return jResponse;  
+//    }    
+//    
+    
+    
+    //----------------------------------------------------------- TEST       
+//    private JsonArray validFormatDDDDDD(JsonObject jSheetDataIndex, JsonArray jSheetsTotals){        
+//        JsonArray jResponse = new JsonArray();    
+//        boolean is5A = false, is5B = false, is5C = false;   
+//        
+//        JsonArray jSheetDataIndexTotals = jSheetDataIndex.getAsJsonArray("data");
+//        
+//        for (int i = 0; i < jSheetDataIndexTotals.size(); i++) {
+//            JsonObject jIndexTotal = jSheetDataIndexTotals.get(i).getAsJsonObject(); 
+//            Set<Map.Entry<String, JsonElement>> entries = jIndexTotal.entrySet();            
+//            for (Map.Entry<String, JsonElement> entry: entries) {
+//                double value = entry.getValue().getAsDouble();
+//                String key = entry.getKey();                
+//                String[] keyParam = key.split("_");                
+//                int row = Integer.parseInt(keyParam[0]);
+//                int column = Integer.parseInt(keyParam[1]);
+//                String label = keyParam[2];  
+//                System.out.println(label);
+//                if(label.equalsIgnoreCase("5A")){is5A = true;}
+//                if(label.equalsIgnoreCase("5B")){is5B = true;}
+//                if(label.equalsIgnoreCase("5C")){is5C = true;}
+//            }              
+//        }
+//            
+//            System.out.println(is5A +"/"+ is5B +"/"+is5C);
+//        
+////        for (int i = 0; i < formatSheets.size(); i++) {
+////            JsonObject formatSheet = formatSheets.get(i).getAsJsonObject();            
+////            int position = formatSheet.get("hoja").getAsInt()-1;
+////            XSSFSheet sheet = workbook.getSheetAt(position);
+//////            JsonObject coordinates = getCoordinate(sheet, formato, formatSheet);            
+//////            
+//////            if(formatSheet.get("isIndex").getAsBoolean()){                        
+//////                jSheetData = getTableIterator(formato, coordinates, position); 
+//////                JsonArray sheetDataTable = jSheetData.get("data").getAsJsonArray();                
+////           
+//////            }else{
+//////            
+//////            }
+////                    
+////            
+////
+////            
+////            String desc = formatSheet.get("descripcion").getAsString(); 
+////            if(desc.equalsIgnoreCase("Formato-5")){                
+////                jResponse.add(formatSheet);
+////                
+////            }else if(desc.equalsIgnoreCase("Anexo-5A") && is5A){
+////                jResponse.add(formatSheet);
+////            }else if(desc.equalsIgnoreCase("Anexo-5B") && is5B){
+////                jResponse.add(formatSheet);
+////            }else if(desc.equalsIgnoreCase("Anexo-5C") && is5C){
+////                jResponse.add(formatSheet);
+////            }                
+////        }         
+////        
+//        
+//        //JsonObject jSheetData = getTableIterator(formato, coordinates, position);
+//        //JsonArray sheetCordinates = jSheetData.get("data").getAsJsonArray();     
+//
+//
+//          
+//        
+//        
+//              
+//     
+//        return jResponse; 
+//    }     
+//    
+    
     
 }
