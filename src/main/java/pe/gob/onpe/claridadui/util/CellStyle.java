@@ -6,11 +6,13 @@
 package pe.gob.onpe.claridadui.util;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import pe.gob.onpe.claridadui.Constants.Validaciones;
 
 /**
  *
@@ -29,6 +31,21 @@ public class CellStyle {
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return style;
     }       
+    
+    public XSSFCellStyle styleCell_Date(XSSFWorkbook wb, int type) {
+        CreationHelper createHelper = wb.getCreationHelper();  
+        XSSFCellStyle style = wb.createCellStyle();
+        style = getBorderThin(style);
+        style.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+        if(type == Validaciones.SET_OBSERVATION){
+            style.setFillForegroundColor(YELLOW_CELL);
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);        
+        }
+        style.setAlignment(style.ALIGN_RIGHT);
+        return style;
+    }      
+    
+    
     
     public XSSFCellStyle styleCellAmountTotal(XSSFWorkbook wb) {
         XSSFCellStyle style = wb.createCellStyle();

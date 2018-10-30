@@ -127,7 +127,8 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         boolean isIndex = formatSheet.get("isIndex").getAsBoolean();
         String initTable = formatSheet.get("iniTabla").getAsString();
         String subTotalTable = formatSheet.get("subtotal").getAsString();
-        String totalTable = formatSheet.get("total").getAsString();        
+        String totalTable = formatSheet.get("total").getAsString();   
+        String formato = formatSheet.get("descripcion").getAsString();
         
         int initRow = 0;
         int finRow = 0;
@@ -185,6 +186,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         jResponse.addProperty("subtotalRow", subtotalRow);
         jResponse.addProperty("totalRow", totalRow);
         jResponse.addProperty("status", success);
+        jResponse.addProperty("formato", formato);
         return jResponse;        
     } 
     //4 Step
@@ -218,10 +220,11 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(rowOut.get("success").getAsBoolean()){        
                         jdata.add(rowOut.getAsJsonObject("data"));                        
                         sumCol1+= getRowAmount(rowOut, 1); 
-                        sumCol2+= getRowAmount(rowOut, 2);                        
-                        //System.out.println("Hoja Tabla:   "+hoja+  "| "+jdata);
-                        validCustom_Date(hoja, formato, jdata);
+                        sumCol2+= getRowAmount(rowOut, 2);                
+                        
                         //CUSTOM VALIDATION -- COLOCAR AQUI VALIDACIONES ADICIONALES
+                        validCustom_Fechas(row, formato, coordinate, jdata);
+                        validCustom_Padron(row, formato, coordinate, jdata);
                     }                    
                 }else if(row.getRowNum() == rowSubtotal && rowSubtotal>0){  //Data Subtotal
                     rowOut = getRowIterator(formato, hoja, row, Validaciones.T_SUBTOTAL);
@@ -440,11 +443,11 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }
             if(!is5B){
                 is5B = sheetActive.get("5B") != null;
-                if(is5B){TotalIndex5A = sheetActive.get("5B").getAsDouble();}
+                if(is5B){TotalIndex5B = sheetActive.get("5B").getAsDouble();}
             }
             if(!is5C){
                 is5C = sheetActive.get("5C") != null;
-                if(is5C){TotalIndex5A = sheetActive.get("5C").getAsDouble();}
+                if(is5C){TotalIndex5C = sheetActive.get("5C").getAsDouble();}
             }                 
         }               
         
@@ -476,7 +479,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }
         }
         if(is5B){
-            if(TotalIndex5A != Total5A){
+            if(TotalIndex5B != Total5B){
                 Row rowTotal = sheet.getRow(11);
                 Cell cell = rowTotal.getCell(8);   
                 cell.setCellStyle(styleCellObservation(workbook));
@@ -485,7 +488,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }        
         }
         if(is5C){
-            if(TotalIndex5A != Total5A){
+            if(TotalIndex5C != Total5C){
                 Row rowTotal = sheet.getRow(12);
                 Cell cell = rowTotal.getCell(8); 
                 cell.setCellStyle(styleCellObservation(workbook));
@@ -514,11 +517,11 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }
             if(!is6B){
                 is6B = sheetActive.get("6B") != null;
-                if(is6B){TotalIndex6A = sheetActive.get("6B").getAsDouble();}
+                if(is6B){TotalIndex6B = sheetActive.get("6B").getAsDouble();}
             }
             if(!is6C){
                 is6C = sheetActive.get("6C") != null;
-                if(is6C){TotalIndex6A = sheetActive.get("6C").getAsDouble();}
+                if(is6C){TotalIndex6C = sheetActive.get("6C").getAsDouble();}
             }                 
         }               
         
@@ -550,7 +553,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }
         }
         if(is6B){
-            if(TotalIndex6A != Total6A){
+            if(TotalIndex6B != Total6B){
                 Row rowTotal = sheet.getRow(9);
                 Cell cell = rowTotal.getCell(7);   
                 cell.setCellStyle(styleCellObservation(workbook));
@@ -559,7 +562,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }        
         }
         if(is6C){
-            if(TotalIndex6A != Total6A){
+            if(TotalIndex6C != Total6C){
                 Row rowTotal = sheet.getRow(10);
                 Cell cell = rowTotal.getCell(7); 
                 cell.setCellStyle(styleCellObservation(workbook));
@@ -603,33 +606,88 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     }    
     
     //-----------------------------------------------------------CUSTOM VALIDATION  TABLE    
-    private void validCustom_Date(int hoja, Formato formato, JsonArray jdata) {          
-        XSSFSheet sheet = workbook.getSheetAt(hoja);
-        Date date = new Date();
-      
+    private void validCustom_Fechas(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {            
+        int hoja = coordinate.get("hoja").getAsInt();
+        String formatName = coordinate.get("formato").getAsString();                
+        Date rowDate = new Date(), initDate = new Date(), currentDate = new Date();      
         int lastPosition = jdata.size()-1;
         JsonObject jRowData = jdata.get(lastPosition).getAsJsonObject();  
-        boolean isDateValue = jRowData.get("fecAporte") != null;
-        
+        boolean isDateValue = jRowData.get("fecha") != null;                
         try {
             if(isDateValue){
-                date = df.parse(jRowData.get("fecAporte").getAsString());               
-                System.out.println("Hoja Tabla:   "+hoja+  "| Fecha:  "+date);            
+                rowDate = df.parse(jRowData.get("fecha").getAsString()); 
+                initDate = df.parse("01/01/2018");
+                for (DetalleFormato parameter : formato.getDetalle()) { 
+                    if(parameter.getNombreColumna().equalsIgnoreCase("fecha")){                            
+                        if(parameter.getHojaExcel() == hoja){
+                            //if(formatName.equalsIgnoreCase("Anexo-5A")){ }
+                            //System.out.println("Fila : "+ row.getRowNum()  +"   columna: "+parameter.getColumnaExcel()+  " valor: "+rowDate);
+                            boolean validate = rowDate.compareTo(initDate) >= 0 && rowDate.compareTo(currentDate) <= 0;
+                            if(!validate){
+                                Cell cell = row.getCell(parameter.getColumnaExcel()); 
+                                cell.setCellStyle(styleCell_Date(workbook, Validaciones.SET_OBSERVATION));
+                                cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_LIMIT_DATE));                
+                                validData = false;                              
+                            }
+                        }
+                    }           
+                }                                                                                          
             }
         } catch (Exception e) {
             System.out.println(e);
-        }
- 
- 
-        for (DetalleFormato parameter : formato.getDetalle()) { 
-            if(parameter.getHojaExcel() == hoja){
-            
-            }
-        
-        }
-
-        //System.out.println("Hoja Tabla:   "+hoja+  "| "+jdata);
-    
+        }                
     }
+    private void validCustom_Padron(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {    
+        
+        if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-5A")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isDocumento = jRowData.get("documento") != null;            
+            boolean isNombres = jRowData.get("nombres") != null;         
+            boolean isAppat = jRowData.get("apPaterno") != null;  
+            boolean isApmat = jRowData.get("apMaterno") != null;              
+            
+            if(isDocumento){
+                String documento = jRowData.get("documento").getAsString();
+                boolean isPadron = true; 
+                if(isPadron){
+                    String nombres = "nombres";
+                    String apPaterno = "apellido1";
+                    String apMaterno = "apellido2";    
+
+                    if(isNombres && isPadron){
+                        if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
+                            Cell cell = row.getCell(6); 
+                            cell.setCellStyle(styleCellObservation(workbook));
+                            cell.setCellComment(getComentario(cell, nombres));                
+                            validData = false;                                                     
+                        }                        
+                    }
+                    if(isAppat&& isPadron){
+                        if(!apPaterno.equalsIgnoreCase(jRowData.get("apPaterno").getAsString().trim())){
+                            Cell cell = row.getCell(4);
+                            cell.setCellStyle(styleCellObservation(workbook));
+                            cell.setCellComment(getComentario(cell, apPaterno));                
+                            validData = false;                           
+                        }                        
+                    }
+                    if(isApmat&& isPadron){
+                        if(!apMaterno.equalsIgnoreCase(jRowData.get("apMaterno").getAsString().trim())){
+                            Cell cell = row.getCell(5); 
+                            cell.setCellStyle(styleCellObservation(workbook));
+                            cell.setCellComment(getComentario(cell, apMaterno));                
+                            validData = false;                               
+                        }                               
+                    }                  
+                }else{
+                    Cell cell = row.getCell(7);
+                    cell.setCellStyle(styleCellObservation(workbook));
+                    cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
+                    validData = false;   
+                }                         
+            }            
+        }
+    }
+    
     
 }

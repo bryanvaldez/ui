@@ -88,7 +88,7 @@ public class ExcelUtil extends CellStyle{
         XSSFSheet sheet = (XSSFSheet) cell.getSheet();        
         XSSFCreationHelper richTextFactory = sheet.getWorkbook().getCreationHelper();
         XSSFFont font = sheet.getWorkbook().createFont();
-        font.setFontHeightInPoints((short) 14);
+        font.setFontHeightInPoints((short) 12);
         XSSFRichTextString rtf1 = richTextFactory.createRichTextString(mensaje);
         rtf1.applyFont(font);
         XSSFDrawing drawing = sheet.createDrawingPatriarch();

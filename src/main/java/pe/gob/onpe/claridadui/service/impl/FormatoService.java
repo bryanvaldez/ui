@@ -195,7 +195,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(1, 8, 13, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));
           
         //PARAMETROS DE LECTURA ANEXO 5A 
-        p.add(new DetalleFormato(2, 2, 0, "fecAporte", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 3, 0, "numComprobante", Validaciones.COMPROB, Mensajes.I_COMPROBANTE, Comentarios.I_COMPROBANTE, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 4, 0, "apPaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 5, 0, "apMaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 0, 0, Validaciones.T_TABLE, false));
@@ -205,13 +205,13 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(2, 9, 0, "codAporte", Validaciones.TABLA1, Mensajes.I_TABLA1, Comentarios.I_TABLA1, 0, 1, 0, 0, Validaciones.T_TABLE, false));         
         p.add(new DetalleFormato(2, 10, 0, "montoEfectivo", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 1, 0, Validaciones.T_TABLE, true));
         p.add(new DetalleFormato(2, 11, 0, "montoEspecie", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 2, 0, Validaciones.T_TABLE, true));        
-        p.add(new DetalleFormato(2, 12, 0, "detalle", Validaciones.DETALLE, Mensajes.I_DETALLE, Comentarios.I_DETALLE, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 12, 0, "detalle", Validaciones.DETALLE, Mensajes.I_DETALLE, Comentarios.I_DETALLE, 0, 0, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 10, 0, "subTotalEfectivo", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 1, 0, Validaciones.T_SUBTOTAL, true)); 
         p.add(new DetalleFormato(2, 11, 0, "subTotalEspecie", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 2, 0, Validaciones.T_SUBTOTAL, true));         
         p.add(new DetalleFormato(2, 10, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true)); 
         
         //PARAMETROS DE LECTURA ANEXO 5B        
-        p.add(new DetalleFormato(3, 2, 0, "fecActividad", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 3, 0, "codActividad", Validaciones.TABLA2, Mensajes.I_TABLA2, Comentarios.I_TABLA2, 0, 1, 0, 0, Validaciones.T_TABLE, false)); 
         p.add(new DetalleFormato(3, 4, 0, "lugarActividad", Validaciones.LUGAR, Mensajes.I_LUGAR, Comentarios.I_LUGAR, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 6, 0, "importe", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TABLE, true));
@@ -219,7 +219,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(3, 6, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));          
         
         //PARAMETROS DE LECTURA ANEXO 5C        
-        p.add(new DetalleFormato(4, 2, 0, "fecAporte", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 3, 0, "codAporte", Validaciones.TABLA3, Mensajes.I_TABLA3, Comentarios.I_TABLA3, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 4, 0, "sustento", Validaciones.SUSTENTO, Mensajes.I_SUSTENTO, Comentarios.I_SUSTENTO, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 5, 0, "apPaterno", Validaciones.NOMBRES, Mensajes.I_NOMBRES, Comentarios.I_NOMBRES, 0, 1, 0, 0, Validaciones.T_TABLE, false));
@@ -242,7 +242,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(1, 7, 11, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));   
         
         //PARAMETROS DE LECTURA ANEXO 6A
-        p.add(new DetalleFormato(2, 2, 0, "fecComprobante", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(2, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 3, 0, "tipoMedio", Validaciones.MEDIO, Mensajes.I_MEDIO, Comentarios.I_MEDIO, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 4, 0, "razonSocial", Validaciones.RAZON, Mensajes.I_RAZON, Comentarios.I_RAZON, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(2, 5, 0, "ruc", Validaciones.RUC, Mensajes.I_RUC, Comentarios.I_RUC, 0, 1, 0, 0, Validaciones.T_TABLE, false));
@@ -254,7 +254,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(2, 9, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));
         
         //PARAMETROS DE LECTURA ANEXO 6B
-        p.add(new DetalleFormato(3, 2, 0, "fecComprobante", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(3, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 3, 0, "tipoGasto", Validaciones.TIPOGASTO, Mensajes.I_TIPOGASTO, Comentarios.I_TIPOGASTO, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 4, 0, "razonSocial", Validaciones.RAZON, Mensajes.I_RAZON, Comentarios.I_RAZON, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 5, 0, "tipoDocumento", Validaciones.TIPODOC, Mensajes.I_TIPODOC, Comentarios.I_TIPODOC, 0, 1, 0, 0, Validaciones.T_TABLE, false));
@@ -267,7 +267,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(3, 10, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));
                 
         //PARAMETROS DE LECTURA ANEXO 6B
-        p.add(new DetalleFormato(4, 2, 0, "fecGasto", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
+        p.add(new DetalleFormato(4, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 3, 0, "concepto", Validaciones.ESPECIF, Mensajes.I_ESPECIFIC, Comentarios.I_ESPECIFIC, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 4, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.I_TIPOPAGO, Comentarios.I_TIPOPAGO, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 5, 0, "monto", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TABLE, true));         

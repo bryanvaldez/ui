@@ -14,6 +14,8 @@ public class Mensajes {
     public static final String M_INVALID_EXCEL = "Formato Incorrecto.";  
     public static final String M_INVALID_AMOUNT = "El monto no coincide con la suma de los registros ingresados."; 
     public static final String M_INVALID_AMOUNT_SHEET = "El monto no coincide con el valor del total en la hoja del formato."; 
+    public static final String M_INVALID_LIMIT_DATE = "La fecha ingresada no encuentra dentro del rango de fechas permitido.";
+    public static final String M_NOFOUND_DNI = "El dni Ingresado no es correcto.";     
     
     public static final String I_MONTO = "Sólo se permiten números. (Máximo 2 decimales).";   
     public static final String I_FECHA = "Formato de fecha incorrecta.";       
