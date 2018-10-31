@@ -266,7 +266,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(3, 11, 0, "descripcion", Validaciones.ESPECIF, Mensajes.I_ESPECIFIC, Comentarios.I_ESPECIFIC, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 10, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));
                 
-        //PARAMETROS DE LECTURA ANEXO 6B
+        //PARAMETROS DE LECTURA ANEXO 6C
         p.add(new DetalleFormato(4, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 3, 0, "concepto", Validaciones.ESPECIF, Mensajes.I_ESPECIFIC, Comentarios.I_ESPECIFIC, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(4, 4, 0, "tipoPago", Validaciones.TIPOPAGO, Mensajes.I_TIPOPAGO, Comentarios.I_TIPOPAGO, 0, 1, 0, 0, Validaciones.T_TABLE, false));

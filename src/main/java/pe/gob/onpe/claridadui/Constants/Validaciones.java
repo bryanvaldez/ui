@@ -24,7 +24,12 @@ public class Validaciones {
     public static final double UIT = 4150;      
     
     public static final int SET_CLEAN = 0;    
-    public static final int SET_OBSERVATION = 1;    
+    public static final int SET_OBSERVATION = 1;  
+    
+    public static final int TYPEDOC_DNI = 1;  
+    public static final int TYPEDOC_RUC = 2;  
+    public static final int TYPEDOC_ETC = 3;          
+    
     
     public static final String MONTO = "^\\d+(\\.\\d{1,2})?$";     
     public static final String FECHA = "^(\\d{2}\\/([0][1-9]|[1][0-2])\\/(199[6-9]|2[0-9]{3}))$"; 

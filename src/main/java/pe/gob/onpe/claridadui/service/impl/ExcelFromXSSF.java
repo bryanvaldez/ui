@@ -9,11 +9,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.awt.Color;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pe.gob.onpe.claridadui.Constants.Mensajes;
@@ -226,6 +230,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                         validCustom_Fechas(row, formato, coordinate, jdata);
                         validCustom_Comprobante(row, formato, coordinate, jdata);
                         validCustom_Padron(row, formato, coordinate, jdata);
+                        validCustom_Ruc(row, formato, coordinate, jdata);
                         validCustom_Detalle(row, formato, coordinate, jdata);
                         validCustom_AmountUit(row, formato, coordinate, jdata);
                     }                    
@@ -375,7 +380,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
 
         if (value.equalsIgnoreCase("")) {
             if (parameter.getObligatorio() == Validaciones.FORMAT_REQUIRED) {
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, messageEmptyError));                
                 response = false;  
                 validData = response; 
@@ -385,7 +390,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         } else {
             if (regex != null && !regex.trim().isEmpty()) {
                 if (!value.matches(regex)) {
-                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                     cell.setCellComment(getComentario(cell, messageRegexError));
                     response = false;
                     validData = response;
@@ -423,7 +428,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     private void validData_Amount(Row row, int columna, double amount1, double amount2){                      
         Cell cell = row.getCell(columna);
         if(amount1 != amount2){
-            cell.setCellStyle(styleCellObservation(cell));
+            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
             cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT));                
             validData = false; 
         }
@@ -476,7 +481,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex5A != Total5A){
                 Row rowTotal = sheet.getRow(10);
                 Cell cell = rowTotal.getCell(8); 
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }
@@ -485,7 +490,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex5B != Total5B){
                 Row rowTotal = sheet.getRow(11);
                 Cell cell = rowTotal.getCell(8);   
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -494,7 +499,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex5C != Total5C){
                 Row rowTotal = sheet.getRow(12);
                 Cell cell = rowTotal.getCell(8); 
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -550,7 +555,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex6A != Total6A){
                 Row rowTotal = sheet.getRow(8);
                 Cell cell = rowTotal.getCell(7); 
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }
@@ -559,7 +564,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex6B != Total6B){
                 Row rowTotal = sheet.getRow(9);
                 Cell cell = rowTotal.getCell(7);   
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -568,7 +573,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex6C != Total6C){
                 Row rowTotal = sheet.getRow(10);
                 Cell cell = rowTotal.getCell(7); 
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -628,7 +633,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                             boolean validate = rowDate.compareTo(initDate) >= 0 && rowDate.compareTo(currentDate) <= 0;
                             if(!validate){
                                 Cell cell = row.getCell(parameter.getColumnaExcel()); 
-                                cell.setCellStyle(styleCell_Date(workbook, Validaciones.SET_OBSERVATION));
+                                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_LIMIT_DATE));                
                                 validData = false;                              
                             }
@@ -661,7 +666,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isNombres && isPadron){
                         if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
                             Cell cell = row.getCell(6); 
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, nombres));                
                             validData = false;                                                     
                         }                        
@@ -669,7 +674,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isAppat&& isPadron){
                         if(!apPaterno.equalsIgnoreCase(jRowData.get("apPaterno").getAsString().trim())){
                             Cell cell = row.getCell(4);
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, apPaterno));                
                             validData = false;                           
                         }                        
@@ -677,14 +682,14 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isApmat&& isPadron){
                         if(!apMaterno.equalsIgnoreCase(jRowData.get("apMaterno").getAsString().trim())){
                             Cell cell = row.getCell(5); 
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, apMaterno));                
                             validData = false;                               
                         }                               
                     }                  
                 }else{
                     Cell cell = row.getCell(7);
-                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                     cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
                     validData = false;   
                 }                         
@@ -708,7 +713,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isNombres && isPadron){
                         if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
                             Cell cell = row.getCell(7); 
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, nombres));                
                             validData = false;                                                     
                         }                        
@@ -716,7 +721,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isAppat&& isPadron){
                         if(!apPaterno.equalsIgnoreCase(jRowData.get("apPaterno").getAsString().trim())){
                             Cell cell = row.getCell(5);
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, apPaterno));                
                             validData = false;                           
                         }                        
@@ -724,21 +729,189 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isApmat&& isPadron){
                         if(!apMaterno.equalsIgnoreCase(jRowData.get("apMaterno").getAsString().trim())){
                             Cell cell = row.getCell(6); 
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, apMaterno));                
                             validData = false;                               
                         }                               
                     }                  
                 }else{
                     Cell cell = row.getCell(8);
-                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                     cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
                     validData = false;   
                 }                         
             }            
-        }        
+        }else if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-6B")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isTipoDocumento= jRowData.get("tipoDocumento") != null;
+            boolean isDocumento = jRowData.get("documento") != null;            
+            boolean isNombres = jRowData.get("razonSocial") != null;                     
+            
+            if(isTipoDocumento){
+                int tipoDocumento = jRowData.get("tipoDocumento").getAsInt();
+                if(tipoDocumento == Validaciones.TYPEDOC_DNI){
+                    if(isDocumento){
+                        String documento = jRowData.get("documento").getAsString(); 
+                        boolean isPadron = true; 
+                        if(isPadron){
+                            String nombres = "nombres";
+                            String apPaterno = "apellido1";
+                            String apMaterno = "apellido2";                             
+                            
+                            String nombresResponse = nombres+" "+apPaterno+" "+apMaterno;  
+                            if(isNombres){                                
+                                if(!nombresResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                    Cell cell = row.getCell(4); 
+                                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                    cell.setCellComment(getComentario(cell, nombresResponse));                
+                                    validData = false;                                                     
+                                }                        
+                            }                  
+                        }else{
+                            Cell cell = row.getCell(6);
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                            cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
+                            validData = false; 
+                        }                                                                         
+                    }                
+                }                       
+            }            
+        }else if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-6C")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isTipoDocumento= jRowData.get("tipoDocumento") != null;
+            boolean isDocumento = jRowData.get("documento") != null;            
+            boolean isNombres = jRowData.get("razonSocial") != null;                     
+            
+            if(isTipoDocumento){
+                int tipoDocumento = jRowData.get("tipoDocumento").getAsInt();
+                if(tipoDocumento == Validaciones.TYPEDOC_DNI){
+                    if(isDocumento){
+                        String documento = jRowData.get("documento").getAsString(); 
+                        boolean isPadron = true; 
+                        if(isPadron){
+                            String nombres = "nombres";
+                            String apPaterno = "apellido1";
+                            String apMaterno = "apellido2";                             
+                            
+                            String nombresResponse = nombres+" "+apPaterno+" "+apMaterno;  
+                            if(isNombres){                                
+                                if(!nombresResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                    Cell cell = row.getCell(6); 
+                                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                    cell.setCellComment(getComentario(cell, nombresResponse));                
+                                    validData = false;                                                     
+                                }                        
+                            }                  
+                        }else{
+                            Cell cell = row.getCell(8);
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                            cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
+                            validData = false; 
+                        }                                                                         
+                    }                
+                }                       
+            }            
+        }         
         
     }
+    private void validCustom_Ruc(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {    
+        
+        if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-6A")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isRuc= jRowData.get("ruc") != null;            
+            boolean isRazonSocial= jRowData.get("razonSocial") != null;         
+            
+            
+            if(isRuc){
+                String ruc = jRowData.get("ruc").getAsString();
+                boolean isRucConsulta = true; 
+                if(isRucConsulta){
+                    String rucResponse = "bryan valdez jara";  
+
+                    if(isRazonSocial){
+                        if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                            Cell cell = row.getCell(4); 
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                            cell.setCellComment(getComentario(cell, rucResponse));                
+                            validData = false;                                                     
+                        }                        
+                    }                  
+                }else{
+                    Cell cell = row.getCell(7);
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                    cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
+                    validData = false;   
+                }                         
+            }            
+        }else if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-6B")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isTipoDocumento= jRowData.get("tipoDocumento") != null; 
+            boolean isDocumento= jRowData.get("documento") != null;
+            boolean isRazonSocial= jRowData.get("razonSocial") != null;     
+            
+            if(isTipoDocumento){
+                int tipoDocumento = jRowData.get("tipoDocumento").getAsInt();
+                if(tipoDocumento == Validaciones.TYPEDOC_RUC){
+                    if(isDocumento){
+                        String ruc = jRowData.get("documento").getAsString(); 
+                        boolean isRucConsulta = true; 
+                        if(isRucConsulta){
+                            String rucResponse = "bryan valdez jara";  
+                            if(isRazonSocial){
+                                if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                    Cell cell = row.getCell(4); 
+                                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                    cell.setCellComment(getComentario(cell, rucResponse));                
+                                    validData = false;                                                     
+                                }                        
+                            }                  
+                        }else{
+                            Cell cell = row.getCell(6);
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                            cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
+                            validData = false;   
+                        }                                                                         
+                    }                
+                }
+            }
+        }else if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-6C")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isTipoDocumento= jRowData.get("tipoDocumento") != null; 
+            boolean isDocumento= jRowData.get("documento") != null;
+            boolean isRazonSocial= jRowData.get("razonSocial") != null;     
+            
+            if(isTipoDocumento){
+                int tipoDocumento = jRowData.get("tipoDocumento").getAsInt();
+                if(tipoDocumento == Validaciones.TYPEDOC_RUC){
+                    if(isDocumento){
+                        String ruc = jRowData.get("documento").getAsString(); 
+                        boolean isRucConsulta = true; 
+                        if(isRucConsulta){
+                            String rucResponse = "bryan valdez jara";  
+                            if(isRazonSocial){
+                                if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                    Cell cell = row.getCell(6); 
+                                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                    cell.setCellComment(getComentario(cell, rucResponse));                
+                                    validData = false;                                                     
+                                }                        
+                            }                  
+                        }else{
+                            Cell cell = row.getCell(8);
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                            cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
+                            validData = false;   
+                        }                                                                         
+                    }                
+                }
+            }
+        }                 
+    }    
     private void validCustom_Detalle(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {            
         if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-5A")){
             JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
@@ -749,22 +922,22 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             
             if(isEfectivo && isEspecie){
                 Cell cell = row.getCell(10);
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE_AMOUNT));     
                 
                 cell = row.getCell(11);
-                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                 cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE_AMOUNT));                   
                 
                 validData = false;                   
             }else{                
                 if(!isEfectivo && !isEspecie){
                     Cell cell = row.getCell(10);
-                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                     cell.setCellComment(getComentario(cell, Mensajes.M_REQUIRED_AMOUNT));     
 
                     cell = row.getCell(11);
-                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                     cell.setCellComment(getComentario(cell, Mensajes.M_REQUIRED_AMOUNT));                   
 
                     validData = false;                                      
@@ -772,7 +945,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isEspecie){
                         if(!isDetalle){
                             Cell cell = row.getCell(12);
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, Mensajes.M_REQUIRED_DESC_ESPECIE));                    
                             validData = false;                                          
                         }                
@@ -794,7 +967,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                         String iNumComprobante = iRowData.get("numComprobante").getAsString(); 
                         if(currentNumComprobante.equalsIgnoreCase(iNumComprobante)){
                             Cell cell = row.getCell(3);
-                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                             cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE));    
                             validData = false;
                             break;
@@ -813,7 +986,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 double amount = jRowData.get("monto").getAsDouble();
                 if(amount>limiUIT){
                     Cell cell = row.getCell(6);
-                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
                     cell.setCellComment(getComentario(cell, Mensajes.M_UIT_EXCEEDED));    
                     validData = false;                            
                 }
