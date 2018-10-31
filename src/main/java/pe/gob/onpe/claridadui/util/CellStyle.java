@@ -6,6 +6,7 @@
 package pe.gob.onpe.claridadui.util;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -22,10 +23,9 @@ public class CellStyle {
     
     public XSSFColor COLOR_CELL_ENUM = new XSSFColor(new java.awt.Color(215, 210, 183));    
     public XSSFColor YELLOW_CELL = new XSSFColor(new java.awt.Color(255, 255, 0)); 
-    
-    
-    public XSSFCellStyle styleCellObservation(XSSFWorkbook wb) {
-        XSSFCellStyle style = wb.createCellStyle();
+        
+    public XSSFCellStyle styleCellObservation(Cell cell) {
+        XSSFCellStyle style = (XSSFCellStyle) cell.getCellStyle();
         style = getBorderThin(style);
         style.setFillForegroundColor(YELLOW_CELL);
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);

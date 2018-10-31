@@ -21,6 +21,7 @@ public class Validaciones {
     
              
     public static final int FORMAT_REQUIRED = 1;  
+    public static final double UIT = 4150;      
     
     public static final int SET_CLEAN = 0;    
     public static final int SET_OBSERVATION = 1;    

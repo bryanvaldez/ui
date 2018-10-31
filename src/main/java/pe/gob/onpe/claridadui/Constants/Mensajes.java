@@ -16,6 +16,11 @@ public class Mensajes {
     public static final String M_INVALID_AMOUNT_SHEET = "El monto no coincide con el valor del total en la hoja del formato."; 
     public static final String M_INVALID_LIMIT_DATE = "La fecha ingresada no encuentra dentro del rango de fechas permitido.";
     public static final String M_NOFOUND_DNI = "El dni Ingresado no es correcto.";     
+    public static final String M_DUPLICATE_AMOUNT = "Solo se puede ingresar un tipo de monto.";  
+    public static final String M_REQUIRED_DESC_ESPECIE = "Se debe de ingresar una descripcion del aporte en especie.";
+    public static final String M_REQUIRED_AMOUNT = "Indicar el monto. (Precisión a 2 decimales)";     
+    public static final String M_DUPLICATE = "Este ingreso ya fue registrado anteriormente en el documento.";       
+    public static final String M_UIT_EXCEEDED = "El monto supera la el limite de UIT permitido por el formato.";      
     
     public static final String I_MONTO = "Sólo se permiten números. (Máximo 2 decimales).";   
     public static final String I_FECHA = "Formato de fecha incorrecta.";       

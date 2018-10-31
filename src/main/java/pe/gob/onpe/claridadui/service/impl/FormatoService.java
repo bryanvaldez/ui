@@ -214,7 +214,7 @@ public class FormatoService implements IFormatoService {
         p.add(new DetalleFormato(3, 2, 0, "fecha", Validaciones.FECHA, Mensajes.I_FECHA, Comentarios.I_FECHA, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 3, 0, "codActividad", Validaciones.TABLA2, Mensajes.I_TABLA2, Comentarios.I_TABLA2, 0, 1, 0, 0, Validaciones.T_TABLE, false)); 
         p.add(new DetalleFormato(3, 4, 0, "lugarActividad", Validaciones.LUGAR, Mensajes.I_LUGAR, Comentarios.I_LUGAR, 0, 1, 0, 0, Validaciones.T_TABLE, false));
-        p.add(new DetalleFormato(3, 6, 0, "importe", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(3, 6, 0, "monto", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TABLE, true));
         p.add(new DetalleFormato(3, 7, 0, "detalle", Validaciones.DETALLE, Mensajes.I_DETALLE, Comentarios.I_DETALLE, 0, 1, 0, 0, Validaciones.T_TABLE, false));
         p.add(new DetalleFormato(3, 6, 0, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));          
         

@@ -224,7 +224,10 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                         
                         //CUSTOM VALIDATION -- COLOCAR AQUI VALIDACIONES ADICIONALES
                         validCustom_Fechas(row, formato, coordinate, jdata);
+                        validCustom_Comprobante(row, formato, coordinate, jdata);
                         validCustom_Padron(row, formato, coordinate, jdata);
+                        validCustom_Detalle(row, formato, coordinate, jdata);
+                        validCustom_AmountUit(row, formato, coordinate, jdata);
                     }                    
                 }else if(row.getRowNum() == rowSubtotal && rowSubtotal>0){  //Data Subtotal
                     rowOut = getRowIterator(formato, hoja, row, Validaciones.T_SUBTOTAL);
@@ -372,7 +375,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
 
         if (value.equalsIgnoreCase("")) {
             if (parameter.getObligatorio() == Validaciones.FORMAT_REQUIRED) {
-                cell.setCellStyle(styleCellObservation(wb));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, messageEmptyError));                
                 response = false;  
                 validData = response; 
@@ -382,7 +385,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
         } else {
             if (regex != null && !regex.trim().isEmpty()) {
                 if (!value.matches(regex)) {
-                    cell.setCellStyle(styleCellObservation(wb));
+                    cell.setCellStyle(styleCellObservation(cell));
                     cell.setCellComment(getComentario(cell, messageRegexError));
                     response = false;
                     validData = response;
@@ -420,7 +423,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
     private void validData_Amount(Row row, int columna, double amount1, double amount2){                      
         Cell cell = row.getCell(columna);
         if(amount1 != amount2){
-            cell.setCellStyle(styleCellObservation(workbook));
+            cell.setCellStyle(styleCellObservation(cell));
             cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT));                
             validData = false; 
         }
@@ -473,7 +476,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex5A != Total5A){
                 Row rowTotal = sheet.getRow(10);
                 Cell cell = rowTotal.getCell(8); 
-                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }
@@ -482,7 +485,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex5B != Total5B){
                 Row rowTotal = sheet.getRow(11);
                 Cell cell = rowTotal.getCell(8);   
-                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -491,7 +494,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex5C != Total5C){
                 Row rowTotal = sheet.getRow(12);
                 Cell cell = rowTotal.getCell(8); 
-                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -547,7 +550,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex6A != Total6A){
                 Row rowTotal = sheet.getRow(8);
                 Cell cell = rowTotal.getCell(7); 
-                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }
@@ -556,7 +559,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex6B != Total6B){
                 Row rowTotal = sheet.getRow(9);
                 Cell cell = rowTotal.getCell(7);   
-                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -565,7 +568,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             if(TotalIndex6C != Total6C){
                 Row rowTotal = sheet.getRow(10);
                 Cell cell = rowTotal.getCell(7); 
-                cell.setCellStyle(styleCellObservation(workbook));
+                cell.setCellStyle(styleCellObservation(cell));
                 cell.setCellComment(getComentario(cell, Mensajes.M_INVALID_AMOUNT_SHEET));                
                 validData = false;                 
             }        
@@ -658,7 +661,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isNombres && isPadron){
                         if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
                             Cell cell = row.getCell(6); 
-                            cell.setCellStyle(styleCellObservation(workbook));
+                            cell.setCellStyle(styleCellObservation(cell));
                             cell.setCellComment(getComentario(cell, nombres));                
                             validData = false;                                                     
                         }                        
@@ -666,7 +669,7 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isAppat&& isPadron){
                         if(!apPaterno.equalsIgnoreCase(jRowData.get("apPaterno").getAsString().trim())){
                             Cell cell = row.getCell(4);
-                            cell.setCellStyle(styleCellObservation(workbook));
+                            cell.setCellStyle(styleCellObservation(cell));
                             cell.setCellComment(getComentario(cell, apPaterno));                
                             validData = false;                           
                         }                        
@@ -674,20 +677,148 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                     if(isApmat&& isPadron){
                         if(!apMaterno.equalsIgnoreCase(jRowData.get("apMaterno").getAsString().trim())){
                             Cell cell = row.getCell(5); 
-                            cell.setCellStyle(styleCellObservation(workbook));
+                            cell.setCellStyle(styleCellObservation(cell));
                             cell.setCellComment(getComentario(cell, apMaterno));                
                             validData = false;                               
                         }                               
                     }                  
                 }else{
                     Cell cell = row.getCell(7);
-                    cell.setCellStyle(styleCellObservation(workbook));
+                    cell.setCellStyle(styleCellObservation(cell));
                     cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
                     validData = false;   
                 }                         
             }            
-        }
+        }else if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-5C")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isDocumento = jRowData.get("documento") != null;            
+            boolean isNombres = jRowData.get("nombres") != null;         
+            boolean isAppat = jRowData.get("apPaterno") != null;  
+            boolean isApmat = jRowData.get("apMaterno") != null;              
+            
+            if(isDocumento){
+                String documento = jRowData.get("documento").getAsString();
+                boolean isPadron = true; 
+                if(isPadron){
+                    String nombres = "nombres";
+                    String apPaterno = "apellido1";
+                    String apMaterno = "apellido2";    
+
+                    if(isNombres && isPadron){
+                        if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
+                            Cell cell = row.getCell(7); 
+                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellComment(getComentario(cell, nombres));                
+                            validData = false;                                                     
+                        }                        
+                    }
+                    if(isAppat&& isPadron){
+                        if(!apPaterno.equalsIgnoreCase(jRowData.get("apPaterno").getAsString().trim())){
+                            Cell cell = row.getCell(5);
+                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellComment(getComentario(cell, apPaterno));                
+                            validData = false;                           
+                        }                        
+                    }
+                    if(isApmat&& isPadron){
+                        if(!apMaterno.equalsIgnoreCase(jRowData.get("apMaterno").getAsString().trim())){
+                            Cell cell = row.getCell(6); 
+                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellComment(getComentario(cell, apMaterno));                
+                            validData = false;                               
+                        }                               
+                    }                  
+                }else{
+                    Cell cell = row.getCell(8);
+                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellComment(getComentario(cell, Mensajes.M_NOFOUND_DNI));                
+                    validData = false;   
+                }                         
+            }            
+        }        
+        
     }
-    
+    private void validCustom_Detalle(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {            
+        if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-5A")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
+            
+            boolean isEfectivo = jRowData.get("montoEfectivo") != null;            
+            boolean isEspecie = jRowData.get("montoEspecie") != null;         
+            boolean isDetalle = jRowData.get("detalle") != null;               
+            
+            if(isEfectivo && isEspecie){
+                Cell cell = row.getCell(10);
+                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE_AMOUNT));     
+                
+                cell = row.getCell(11);
+                cell.setCellStyle(styleCellObservation(cell));
+                cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE_AMOUNT));                   
+                
+                validData = false;                   
+            }else{                
+                if(!isEfectivo && !isEspecie){
+                    Cell cell = row.getCell(10);
+                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellComment(getComentario(cell, Mensajes.M_REQUIRED_AMOUNT));     
+
+                    cell = row.getCell(11);
+                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellComment(getComentario(cell, Mensajes.M_REQUIRED_AMOUNT));                   
+
+                    validData = false;                                      
+                }else{
+                    if(isEspecie){
+                        if(!isDetalle){
+                            Cell cell = row.getCell(12);
+                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellComment(getComentario(cell, Mensajes.M_REQUIRED_DESC_ESPECIE));                    
+                            validData = false;                                          
+                        }                
+                    }                                 
+                }                        
+            }
+        }             
+    }    
+    private void validCustom_Comprobante(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {            
+        if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-5A")){
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();            
+            boolean isComprobante = jRowData.get("numComprobante") != null;                        
+            if(isComprobante){
+                String currentNumComprobante = jRowData.get("numComprobante").getAsString(); 
+                int cantProcesable = jdata.size()-1;                             
+                if(cantProcesable>0){
+                    for (int i = 0; i < cantProcesable; i++) {
+                        JsonObject iRowData = jdata.get(i).getAsJsonObject();
+                        String iNumComprobante = iRowData.get("numComprobante").getAsString(); 
+                        if(currentNumComprobante.equalsIgnoreCase(iNumComprobante)){
+                            Cell cell = row.getCell(3);
+                            cell.setCellStyle(styleCellObservation(cell));
+                            cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE));    
+                            validData = false;
+                            break;
+                        }
+                    }                                        
+                }
+            }   
+        }             
+    } 
+    private void validCustom_AmountUit(Row row, Formato formato, JsonObject coordinate, JsonArray jdata) {            
+        if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-5b")){
+            double limiUIT = Validaciones.UIT *250;
+            JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();            
+            boolean isMonto = jRowData.get("monto") != null;                        
+            if(isMonto){
+                double amount = jRowData.get("monto").getAsDouble();
+                if(amount>limiUIT){
+                    Cell cell = row.getCell(6);
+                    cell.setCellStyle(styleCellObservation(cell));
+                    cell.setCellComment(getComentario(cell, Mensajes.M_UIT_EXCEEDED));    
+                    validData = false;                            
+                }
+            }   
+        }             
+    } 
     
 }
