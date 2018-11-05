@@ -16,8 +16,8 @@ import pe.gob.onpe.claridadui.service.iface.IExcelXSSFValidatorService;
 public class FactoryService implements IFactoryService{
 
     @Override
-    public IExcelXSSFValidatorService validateExcelXSSF(XSSFWorkbook file, int type) {
-        return new ExcelFromXSSF(file, type);
+    public IExcelXSSFValidatorService validateExcelXSSF(XSSFWorkbook file, int type, String pathRuc, String pathClaridad, int candidato) {
+        return new ExcelFromXSSF(file, type, pathRuc, pathClaridad, candidato);
     }
     
 }

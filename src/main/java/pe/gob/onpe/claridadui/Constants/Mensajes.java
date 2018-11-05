@@ -20,7 +20,8 @@ public class Mensajes {
     public static final String M_DUPLICATE_AMOUNT = "Solo se puede ingresar un tipo de monto.";  
     public static final String M_REQUIRED_DESC_ESPECIE = "Se debe de ingresar una descripcion del aporte en especie.";
     public static final String M_REQUIRED_AMOUNT = "Indicar el monto. (Precisión a 2 decimales)";     
-    public static final String M_DUPLICATE = "Este ingreso ya fue registrado anteriormente en el documento.";       
+    public static final String M_DUPLICATE_DOC = "Este ingreso ya fue registrado anteriormente en el documento.";   
+    public static final String M_DUPLICATE_BD = "Este ingreso ya fue registrado anteriormente en el sistema.";     
     public static final String M_UIT_EXCEEDED = "El monto supera la el limite de UIT permitido por el formato.";      
     
     public static final String I_MONTO = "Sólo se permiten números. (Máximo 2 decimales).";   

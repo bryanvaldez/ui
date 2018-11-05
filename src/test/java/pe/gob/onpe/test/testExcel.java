@@ -21,15 +21,19 @@ public class testExcel {
 
     public static final String PATH_FORMATO_5 = "D:\\CLARIDAD3\\PRUEBA\\Formato_5.xlsx";
     public static final String PATH_FORMATO_6 = "D:\\CLARIDAD3\\PRUEBA\\Formato_6.xlsx";
+    public static final String PATH_RUC = "https://192.168.48.27:8181/SunatConsultaWS-2/consultaRuc?sRuc=";
+    public static final String PATH_CLARIDAD = "http://localhost:8080/claridad/";    
+    
         
     public static void main(String[] args) {
         try {
             String path = testExcel.class.getResource("/formatos/Formato_5.xlsx").toURI().getPath();            
-            int tipoFormato = FormatoEnum.FORMATO_6.getId();
+            int tipoFormato = FormatoEnum.FORMATO_5.getId();
+            int candidato = 12375;
             
-            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH_FORMATO_6));
+            XSSFWorkbook file = new XSSFWorkbook(new FileInputStream(PATH_FORMATO_5));
             IFactoryService factory = new FactoryService();
-            IExcelXSSFValidatorService excelValidator = factory.validateExcelXSSF(file, tipoFormato);
+            IExcelXSSFValidatorService excelValidator = factory.validateExcelXSSF(file, tipoFormato, PATH_RUC, PATH_CLARIDAD, candidato);
             
             String responseJson = excelValidator.validate();
             System.out.println(responseJson);

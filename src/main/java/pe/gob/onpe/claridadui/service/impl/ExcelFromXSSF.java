@@ -10,9 +10,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -34,8 +46,8 @@ import pe.gob.onpe.claridadui.service.iface.IFormatoService;
  */
 public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidatorService{
     
-    public ExcelFromXSSF(XSSFWorkbook file, int type){
-        super(file, type);
+    public ExcelFromXSSF(XSSFWorkbook file, int type, String pathRuc, String pathClaridad, int candidato){
+        super(file, type, pathRuc, pathClaridad, candidato);
     }
 
     @Override
@@ -657,11 +669,20 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             
             if(isDocumento){
                 String documento = jRowData.get("documento").getAsString();
-                boolean isPadron = true; 
-                if(isPadron){
-                    String nombres = "nombres";
-                    String apPaterno = "apellido1";
-                    String apMaterno = "apellido2";    
+                String url = pathClaridad+"servicio/aportante/"+documento;
+                boolean isPadron = false;
+                JsonObject jPadronResponse = new JsonObject();
+                try {
+                    jPadronResponse = (JsonObject) new JsonParser().parse(getUrlService(url));    
+                    isPadron = jPadronResponse.get("success").getAsBoolean();
+                } catch (Exception e) {
+                    System.out.println("Problemas con la de Conexion Servicio.");
+                }                                        
+                if(isPadron){                    
+                    JsonObject jPadron = (JsonObject) new JsonParser().parse(jPadronResponse.get("data").getAsString());                                        
+                    String nombres = jPadron.get("nombres") != null? jPadron.get("nombres").getAsString():"";
+                    String apPaterno = jPadron.get("apPat") != null? jPadron.get("apPat").getAsString():"";
+                    String apMaterno = jPadron.get("apMat") != null? jPadron.get("apMat").getAsString():"";    
 
                     if(isNombres && isPadron){
                         if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
@@ -704,12 +725,20 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             
             if(isDocumento){
                 String documento = jRowData.get("documento").getAsString();
-                boolean isPadron = true; 
+                String url = pathClaridad+"servicio/aportante/"+documento;
+                boolean isPadron = false;
+                JsonObject jPadronResponse = new JsonObject();
+                try {
+                    jPadronResponse = (JsonObject) new JsonParser().parse(getUrlService(url));    
+                    isPadron = jPadronResponse.get("success").getAsBoolean();
+                } catch (Exception e) {
+                    System.out.println("Problemas con la de Conexion Servicio.");
+                }                  
                 if(isPadron){
-                    String nombres = "nombres";
-                    String apPaterno = "apellido1";
-                    String apMaterno = "apellido2";    
-
+                    JsonObject jPadron = (JsonObject) new JsonParser().parse(jPadronResponse.get("data").getAsString());                                        
+                    String nombres = jPadron.get("nombres") != null? jPadron.get("nombres").getAsString():"";
+                    String apPaterno = jPadron.get("apPat") != null? jPadron.get("apPat").getAsString():"";
+                    String apMaterno = jPadron.get("apMat") != null? jPadron.get("apMat").getAsString():"";  
                     if(isNombres && isPadron){
                         if(!nombres.equalsIgnoreCase(jRowData.get("nombres").getAsString().trim())){                        
                             Cell cell = row.getCell(7); 
@@ -753,13 +782,27 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 if(tipoDocumento == Validaciones.TYPEDOC_DNI){
                     if(isDocumento){
                         String documento = jRowData.get("documento").getAsString(); 
-                        boolean isPadron = true; 
+                        String url = pathClaridad+"servicio/aportante/"+documento;
+                        boolean isPadron = false;
+                        JsonObject jPadronResponse = new JsonObject();
+                        try {
+                            jPadronResponse = (JsonObject) new JsonParser().parse(getUrlService(url));    
+                            isPadron = jPadronResponse.get("success").getAsBoolean();
+                        } catch (Exception e) {
+                            System.out.println("Problemas con la de Conexion Servicio.");
+                        }  
                         if(isPadron){
-                            String nombres = "nombres";
-                            String apPaterno = "apellido1";
-                            String apMaterno = "apellido2";                             
-                            
-                            String nombresResponse = nombres+" "+apPaterno+" "+apMaterno;  
+                            JsonObject jPadron = (JsonObject) new JsonParser().parse(jPadronResponse.get("data").getAsString());
+                            String nombresResponse = "";
+                            if(jPadron.get("apPat") != null){
+                                 nombresResponse += jPadron.get("apPat").getAsString();
+                            }
+                            if(jPadron.get("apMat") != null){
+                                 nombresResponse += " "+jPadron.get("apMat").getAsString();
+                            }        
+                            if(jPadron.get("nombres") != null){
+                                 nombresResponse += " "+jPadron.get("nombres").getAsString();
+                            }                                                           
                             if(isNombres){                                
                                 if(!nombresResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
                                     Cell cell = row.getCell(4); 
@@ -789,13 +832,27 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 if(tipoDocumento == Validaciones.TYPEDOC_DNI){
                     if(isDocumento){
                         String documento = jRowData.get("documento").getAsString(); 
-                        boolean isPadron = true; 
+                        String url = pathClaridad+"servicio/aportante/"+documento;
+                        boolean isPadron = false;
+                        JsonObject jPadronResponse = new JsonObject();
+                        try {
+                            jPadronResponse = (JsonObject) new JsonParser().parse(getUrlService(url));    
+                            isPadron = jPadronResponse.get("success").getAsBoolean();
+                        } catch (Exception e) {
+                            System.out.println("Problemas con la de Conexion Servicio.");
+                        }  
                         if(isPadron){
-                            String nombres = "nombres";
-                            String apPaterno = "apellido1";
-                            String apMaterno = "apellido2";                             
-                            
-                            String nombresResponse = nombres+" "+apPaterno+" "+apMaterno;  
+                            JsonObject jPadron = (JsonObject) new JsonParser().parse(jPadronResponse.get("data").getAsString());
+                            String nombresResponse = "";
+                            if(jPadron.get("apPat") != null){
+                                 nombresResponse += jPadron.get("apPat").getAsString();
+                            }
+                            if(jPadron.get("apMat") != null){
+                                 nombresResponse += " "+jPadron.get("apMat").getAsString();
+                            }        
+                            if(jPadron.get("nombres") != null){
+                                 nombresResponse += " "+jPadron.get("nombres").getAsString();
+                            }   
                             if(isNombres){                                
                                 if(!nombresResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
                                     Cell cell = row.getCell(6); 
@@ -826,25 +883,32 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             
             
             if(isRuc){
+                boolean isRucConsulta = false;                 
                 String ruc = jRowData.get("ruc").getAsString();
-                boolean isRucConsulta = true; 
-                if(isRucConsulta){
-                    String rucResponse = "bryan valdez jara";  
-
-                    if(isRazonSocial){
-                        if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
-                            Cell cell = row.getCell(4); 
-                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                            cell.setCellComment(getComentario(cell, rucResponse));                
-                            validData = false;                                                     
-                        }                        
-                    }                  
-                }else{
-                    Cell cell = row.getCell(7);
-                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                    cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
-                    validData = false;   
-                }                         
+                String url = pathRuc+ruc;   
+                try {
+                    JsonObject jresponse = (JsonObject) new JsonParser().parse(getUrlService(url));                       
+                    isRucConsulta = jresponse.get("respuesta").getAsString().equalsIgnoreCase("0");                                                                              
+                    if(isRucConsulta){
+                        JsonObject jRuc = jresponse.getAsJsonObject("data");                      
+                        String rucResponse = jRuc.get("sRazonSocial").getAsString().trim();  
+                        if(isRazonSocial){
+                            if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                Cell cell = row.getCell(4); 
+                                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                cell.setCellComment(getComentario(cell, rucResponse));                
+                                validData = false;                                                     
+                            }                        
+                        }                  
+                    }else{
+                        Cell cell = row.getCell(7);
+                        cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                        cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
+                        validData = false;   
+                    }                     
+                } catch (Exception e) {
+                    System.out.println("Problemas con la de Conexion Servicio.");
+                }                        
             }            
         }else if(coordinate.get("formato").getAsString().equalsIgnoreCase("Anexo-6B")){
             JsonObject jRowData = jdata.get(jdata.size()-1).getAsJsonObject();
@@ -857,24 +921,31 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 int tipoDocumento = jRowData.get("tipoDocumento").getAsInt();
                 if(tipoDocumento == Validaciones.TYPEDOC_RUC){
                     if(isDocumento){
-                        String ruc = jRowData.get("documento").getAsString(); 
-                        boolean isRucConsulta = true; 
-                        if(isRucConsulta){
-                            String rucResponse = "bryan valdez jara";  
-                            if(isRazonSocial){
-                                if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
-                                    Cell cell = row.getCell(4); 
-                                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                                    cell.setCellComment(getComentario(cell, rucResponse));                
-                                    validData = false;                                                     
-                                }                        
-                            }                  
-                        }else{
-                            Cell cell = row.getCell(6);
-                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                            cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
-                            validData = false;   
-                        }                                                                         
+                        String ruc = jRowData.get("documento").getAsString();
+                        String url = pathRuc+ruc; 
+                        try {                           
+                            JsonObject jresponse = (JsonObject) new JsonParser().parse(getUrlService(url));                       
+                            boolean isRucConsulta = jresponse.get("respuesta").getAsString().equalsIgnoreCase("0");                                                                              
+                            if(isRucConsulta){
+                                JsonObject jRuc = jresponse.getAsJsonObject("data");                      
+                                String rucResponse = jRuc.get("sRazonSocial").getAsString().trim();  
+                                if(isRazonSocial){
+                                    if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                        Cell cell = row.getCell(4); 
+                                        cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                        cell.setCellComment(getComentario(cell, rucResponse));                
+                                        validData = false;                                                     
+                                    }                        
+                                }                  
+                            }else{
+                                Cell cell = row.getCell(6);
+                                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
+                                validData = false;   
+                            }                     
+                        } catch (Exception e) {
+                            System.out.println("Problemas con la de Conexion Servicio.");
+                        }                                                                                                 
                     }                
                 }
             }
@@ -889,24 +960,32 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                 int tipoDocumento = jRowData.get("tipoDocumento").getAsInt();
                 if(tipoDocumento == Validaciones.TYPEDOC_RUC){
                     if(isDocumento){
-                        String ruc = jRowData.get("documento").getAsString(); 
-                        boolean isRucConsulta = true; 
-                        if(isRucConsulta){
-                            String rucResponse = "bryan valdez jara";  
-                            if(isRazonSocial){
-                                if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
-                                    Cell cell = row.getCell(6); 
-                                    cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                                    cell.setCellComment(getComentario(cell, rucResponse));                
-                                    validData = false;                                                     
-                                }                        
-                            }                  
-                        }else{
-                            Cell cell = row.getCell(8);
-                            cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                            cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
-                            validData = false;   
-                        }                                                                         
+                        String ruc = jRowData.get("documento").getAsString();
+                        String url = pathRuc+ruc;                         
+                        try {                           
+                            JsonObject jresponse = (JsonObject) new JsonParser().parse(getUrlService(url));                       
+                            boolean isRucConsulta = jresponse.get("respuesta").getAsString().equalsIgnoreCase("0");                             
+                            if(isRucConsulta){
+                                JsonObject jRuc = jresponse.getAsJsonObject("data");                      
+                                String rucResponse = jRuc.get("sRazonSocial").getAsString().trim();   
+                                if(isRazonSocial){
+                                    if(!rucResponse.equalsIgnoreCase(jRowData.get("razonSocial").getAsString().trim())){                        
+                                        Cell cell = row.getCell(6); 
+                                        cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                        cell.setCellComment(getComentario(cell, rucResponse));                
+                                        validData = false;                                                     
+                                    }                        
+                                }                  
+                            }else{
+                                Cell cell = row.getCell(8);
+                                cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                                cell.setCellComment(getComentario(cell, Mensajes.M_RUC_NO_FOUND));                
+                                validData = false;   
+                            }                            
+                  
+                        } catch (Exception e) {
+                            System.out.println("Problemas con la de Conexion Servicio.");
+                        }                         
                     }                
                 }
             }
@@ -968,12 +1047,30 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
                         if(currentNumComprobante.equalsIgnoreCase(iNumComprobante)){
                             Cell cell = row.getCell(3);
                             cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
-                            cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE));    
+                            cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE_DOC));    
                             validData = false;
+                            isComprobante = false;
                             break;
                         }
                     }                                        
                 }
+                if(isComprobante){
+                    String url = pathClaridad+"servicio/comprobante/"+candidato+"/"+currentNumComprobante;
+                    boolean duplicate = false;
+                    JsonObject jPadronResponse = new JsonObject();
+                    try {
+                        jPadronResponse = (JsonObject) new JsonParser().parse(getUrlService(url));    
+                        duplicate = jPadronResponse.get("success").getAsBoolean();
+                    } catch (Exception e) {
+                        System.out.println("Problemas con la de Conexion Servicio Comprobante.");
+                    }                    
+                    if(duplicate){
+                        Cell cell = row.getCell(3);
+                        cell.setCellStyle(styleSimpleCellObservation(workbook, (XSSFCellStyle) cell.getCellStyle()));
+                        cell.setCellComment(getComentario(cell, Mensajes.M_DUPLICATE_BD));    
+                        validData = false;                
+                    }                
+                }                                              
             }   
         }             
     } 
@@ -993,5 +1090,50 @@ public class ExcelFromXSSF extends ExcelValidator implements IExcelXSSFValidator
             }   
         }             
     } 
+    
+    
+    
+    
+    
+    //SERVICES
+    public String getUrlService(String urlName) throws NoSuchAlgorithmException, KeyManagementException {       
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
+            }
+        };  
+        // Install the all-trusting trust manager
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory()); 
+        // Create all-trusting host name verifier
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        }; 
+        // Install the all-trusting host verifier
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);        
+        String res = null;        
+        try {
+            URL url = new URL(urlName);
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            res = "";
+            String str = "";
+            while (null != (str = br.readLine())) {
+                res += str;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }    
+    
     
 }

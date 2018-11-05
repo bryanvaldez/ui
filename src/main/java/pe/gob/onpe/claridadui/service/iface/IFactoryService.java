@@ -12,5 +12,5 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author bvaldez
  */
 public interface IFactoryService {
-    public IExcelXSSFValidatorService validateExcelXSSF(XSSFWorkbook file, int type);     
+    public IExcelXSSFValidatorService validateExcelXSSF(XSSFWorkbook file, int type, String pathRuc, String pathClaridad, int candidato);     
 }

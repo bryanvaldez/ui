@@ -39,11 +39,19 @@ public class ExcelValidator extends ExcelUtil{
     public static final String PATH_OBSERVATION_INCOME = "D:\\CLARIDAD3\\OBSERVACIONES\\INGRESOS\\prueba.xlsx";
     public static final String PATH_OBSERVATION_EXPENSES = "D:\\CLARIDAD3\\OBSERVACIONES\\GASTOS\\prueba.xlsx";
     
+    
+    public String pathRuc;    
+    public String pathClaridad; 
+    public int candidato; 
+    
     public DateFormat df = new SimpleDateFormat("dd/MM/yyyy");    
     
-    public ExcelValidator(XSSFWorkbook workbook, int type){
+    public ExcelValidator(XSSFWorkbook workbook, int type, String pathRuc, String pathClaridad, int candidato){
         this.workbook = workbook;
         this.type = type;
+        this.pathRuc = pathRuc;
+        this.pathClaridad  = pathClaridad;        
+        this.candidato = candidato;
     }
     
     public boolean saveFileObservation(XSSFWorkbook workbook, Formato formato) {
