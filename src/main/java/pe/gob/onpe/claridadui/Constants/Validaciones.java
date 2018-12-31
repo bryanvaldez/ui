@@ -12,14 +12,15 @@ package pe.gob.onpe.claridadui.Constants;
 public class Validaciones {
     
     public static final int FORMAT_READER = 0; 
-    public static final int FORMAT_WRITE = 1; 
+    public static final int FORMAT_WRITE = 1;     
     
+    public static final int FORMAT_5 = 5; 
+    public static final int FORMAT_6 = 6;     
     
     public static final int T_TABLE = 0; 
     public static final int T_SUBTOTAL = 1;   
     public static final int T_TOTAL = 2;       
-    
-             
+        
     public static final int FORMAT_REQUIRED = 1;  
     public static final double UIT = 4150;      
     

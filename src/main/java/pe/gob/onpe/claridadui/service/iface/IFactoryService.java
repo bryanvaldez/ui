@@ -5,6 +5,7 @@
  */
 package pe.gob.onpe.claridadui.service.iface;
 
+import com.itextpdf.text.Document;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -12,5 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author bvaldez
  */
 public interface IFactoryService {
-    public IExcelXSSFValidatorService validateExcelXSSF(XSSFWorkbook file, int type, String pathRuc, String pathClaridad, int candidato);     
+    public IExcelXSSFValidatorService validateExcelXSSF(XSSFWorkbook file, int type, String pathRuc, String pathClaridad, int candidato);   
+    public IExcelExportService exportExcelXSSF(int type, String pathFormato, int candidato);    
+    public IPdfExportService exportPdf(String path, int candidato);
 }

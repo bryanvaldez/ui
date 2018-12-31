@@ -280,5 +280,21 @@ public class FormatoService implements IFormatoService {
         
         return p;
     }
+    
+    
+    private List<DetalleFormato> getIncomeExportDetail(){
+        List<DetalleFormato> p = new ArrayList<>();
+        
+        p.add(new DetalleFormato(1, 1, 2, "simbolo", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 0, 0, Validaciones.T_TABLE, true));
+        
+        
+        p.add(new DetalleFormato(1, 7, 9, "6B", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 0, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 7, 10, "6C", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 0, 0, Validaciones.T_TABLE, true));
+        p.add(new DetalleFormato(1, 7, 11, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));           
+        
+        
+        
+        return p;
+    }
 
 }
