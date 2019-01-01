@@ -15,6 +15,7 @@ import pe.gob.onpe.claridadui.Constants.Mensajes;
 import pe.gob.onpe.claridadui.Constants.Validaciones;
 import pe.gob.onpe.claridadui.enums.FormatoEnum;
 import pe.gob.onpe.claridadui.model.DetalleFormato;
+import pe.gob.onpe.claridadui.model.DetalleInforme;
 import pe.gob.onpe.claridadui.model.Formato;
 import pe.gob.onpe.claridadui.service.iface.IFormatoService;
 
@@ -286,15 +287,26 @@ public class FormatoService implements IFormatoService {
         List<DetalleFormato> p = new ArrayList<>();
         
         p.add(new DetalleFormato(1, 1, 2, "simbolo", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 0, 0, Validaciones.T_TABLE, true));
-        
-        
         p.add(new DetalleFormato(1, 7, 9, "6B", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 0, 0, Validaciones.T_TABLE, true));
         p.add(new DetalleFormato(1, 7, 10, "6C", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 0, 0, 0, Validaciones.T_TABLE, true));
         p.add(new DetalleFormato(1, 7, 11, "total", Validaciones.MONTO, Mensajes.I_MONTO, Comentarios.I_MONTO, 0, 1, 0, 0, Validaciones.T_TOTAL, true));           
-        
-        
-        
         return p;
     }
+    
+    @Override
+    public List<DetalleInforme> getDataInforme(int type) {
+        List<DetalleInforme> p = new ArrayList<>();
+        p.add(new DetalleInforme(1, 1, 1, "Mediante Resolución Jefatural N° 000082-2018-JN/ONPE, de fecha 21 de mayo de 2018, publicada en el diario oficial El Peruano, la Oficina Nacional de Procesos Electorales (en adelante ONPE) fijó el 02 de julio de 2018, como último dia de presentación de la información Financiera Anual 2017(en adelante IFA 2017) de las organizaciones políticas (Anexo A)."));
+        p.add(new DetalleInforme(2, 1, 2, "Mediante Carta N° 000207-2018-GSFP/ONPE, de fecha 31 de mayo de 2018, la Gerencia de Supervisión de Fondos Partidarios de la ONPE(en adelante GSFP), informó al serño Pedro Carmelo Spadaro  Philipps, Representante Legal del movimiento regional \"Yo Soy Callao\", que el último día de presentación de la información Financiera Anual 2017 vencia, improrrogablemente, el lunes 02 de julio de 2018.(Anexo B.)"));
+        p.add(new DetalleInforme(3, 1, 3, "Mediante Notas de Prensa publicadas el 31 de mayo de 2018 y el 26 de junio de 2018 en la página web de la ONPE, se precisó que el plazo para que las organizaciones políticas presenten su IFA 2017, vencia el 02 de julio de 2018 (Anexos C y D)."));
+        p.add(new DetalleInforme(4, 1, 4, "Mediante el informe N°000085-2018-JAVC-SGVC-GSFP/ONPE, de fecha 04 de julio de 2018, el Jefe del Área de Verificación y Control de la GSFP remitió la relación de organizaciones políticas que no cumplieron con presentar su IFA 2017 a la ONPE en el plazo legal establecido, es decir, el 02 de julio de 20108(Aneso E)."));
+        p.add(new DetalleInforme(5, 1, 5, "Mediante Carta N° 000379-2018-GSFP/ONPE, de fecha 17 de julio de 2018, la GSFP de la ONPE otorga al movimiento regional \"Yo Soy Callao\" un plazo adicional de treinta(30) días contados a partir del día siguiente de la fecha de recepción del documento, para que cumpla con presentar su IFA 2017, vencido el cual se iniciará el procedimiento administrativo sancionador por infracción muy grave. Dicha comunicación fue recibida por la organización política el 19 de julio de 2018.(Anexo F)."));
+        p.add(new DetalleInforme(6, 1, 6, "Mediante el informe N°000117-2018-JAVC-SGVC-GSFP/ONPE, de fecha 07 de agosto de 2018, el Jefe del Área de Verificación y Control de la GSFP comunicó que el movimiento regional \"Yo Soy Callao\" presentó a la GSFP, mediante Carta S/N (Exp. N° 11258-2018); su IFA correspondiente al ejercicio anual 2017 el día 30 de julio de 2018, es decir, fuera del plazo establecido por el numeral 34.3 del artículo 34° de la LOP(Anexo G)."));
+        
+        p.add(new DetalleInforme(7, 1, 7, "Mediante el informe N°000117-2018-JAVC-SGVC-GSFP/ONPE, de fecha 07 de agosto de 2018, el Jefe del Área de Verificación y Control de la GSFP comunicó que el movimiento regional \"Yo Soy Callao\" presentó a la GSFP, mediante Carta S/N (Exp. N° 11258-2018); su IFA correspondiente al ejercicio anual 2017 el día 30 de julio de 2018, es decir, fuera del plazo establecido por el numeral 34.3 del artículo 34° de la LOP(Anexo G)."));
+        p.add(new DetalleInforme(8, 1, 8, "Mediante el informe N°000117-2018-JAVC-SGVC-GSFP/ONPE, de fecha 07 de agosto de 2018, el Jefe del Área de Verificación y Control de la GSFP comunicó que el movimiento regional \"Yo Soy Callao\" presentó a la GSFP, mediante Carta S/N (Exp. N° 11258-2018); su IFA correspondiente al ejercicio anual 2017 el día 30 de julio de 2018, es decir, fuera del plazo establecido por el numeral 34.3 del artículo 34° de la LOP(Anexo G)."));
+        return p;
+    }
+    
 
 }

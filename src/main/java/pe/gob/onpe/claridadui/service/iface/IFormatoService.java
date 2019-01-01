@@ -5,6 +5,8 @@
  */
 package pe.gob.onpe.claridadui.service.iface;
 
+import java.util.List;
+import pe.gob.onpe.claridadui.model.DetalleInforme;
 import pe.gob.onpe.claridadui.model.Formato;
 
 /**
@@ -12,5 +14,6 @@ import pe.gob.onpe.claridadui.model.Formato;
  * @author bvaldez
  */
 public interface IFormatoService {
-    public Formato getFormato(int type);    
+    public Formato getFormato(int type);  
+    public List<DetalleInforme> getDataInforme(int type); 
 }
