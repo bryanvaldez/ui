@@ -21,6 +21,7 @@ import com.itextpdf.text.RomanList;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import pe.gob.onpe.claridadui.model.DetalleInforme;
@@ -42,8 +43,11 @@ public class PdfExport implements IPdfExportService{
     
     public final Float mLeft = 94f;   
     public final Float mRight = 94f;   
-    public final Float mTop = 94f;    
-    public final Float mBot = 94f;    
+    public final Float mTop = 100f;    
+    public final Float mBot = 94f;
+
+    public final Float spacing = 10f;
+    public final Float indent = 30f;
     
     public int countPage = 0;    
             
@@ -56,25 +60,17 @@ public class PdfExport implements IPdfExportService{
     public Document export() {
         try {                            
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+            createHeader(writer);
+            createFooter(writer);
             document.open();
             
             setNewPage(document);  
-            createHeader(writer);
             createIntro(writer);
-            countPage++;
                         
             setNewPage(document);
-            createHeader(writer);
             createSubTitle(writer);
             createParagraph(writer);
-            createFooter(writer);
-            countPage++;
-            
-            setNewPage(document);
-            createHeader(writer);
-            createFooter(writer);             
-            countPage++;
-            
+          
             
         } catch (Exception e) {
             
@@ -82,60 +78,22 @@ public class PdfExport implements IPdfExportService{
         
         return document;
     }        
+    
+    private void createHeader(PdfWriter writer){
+        HeaderTable event = new HeaderTable();
+        writer.setPageEvent(event);                     
+    }            
+    private void createFooter(PdfWriter writer){
+        FooterTable event = new FooterTable();
+        writer.setPageEvent(event);         
+    }      
+    
     private void setNewPage(Document document) { 
         document.newPage();        
         Rectangle size = new Rectangle(widthPage, heightPage); 
-        if(countPage==0){
-            document.setMargins(mLeft, mRight, 250f, mBot);            
-        }else{
-            document.setMargins(mTop, mRight, mBot, mLeft);            
-        }
-
+        document.setMargins(mLeft, mRight, mTop, mBot);            
         document.setPageSize(size);
-    }                
-    private void createHeader(PdfWriter writer){
-        try {
-            Float x = mLeft;
-            Float y = heightPage-25;
-            Float width = widthPage-(mLeft+ mRight);
-            Float height = 25f;
-            
-            Font f1 = new Font();
-            f1.setSize(9);
-            f1.setStyle(Font.ITALIC);            
-            Paragraph p1 = new Paragraph("\"Decenio de la Igualdad de oportunidades para mujeres y hombres\" \n \"Año del Diálogo y la Reconciliación Nacional\"", f1);
-            
-            PdfPTable firstColumn = new PdfPTable(1);
-            
-            String path = PdfExport.class.getResource("/imagenes/onpe.png").toURI().getPath(); 
-
-            firstColumn.setTotalWidth(new float[]{width});
-            firstColumn.addCell(createLogoTitle(path, 50f));
-            firstColumn.addCell(createTextCell(p1, height));  
-            PdfContentByte canvas = writer.getDirectContentUnder();
-            firstColumn.completeRow();
-            firstColumn.writeSelectedRows(0, -1, x, y, canvas);               
-        } catch (Exception e) {
-        }           
-    }            
-    private void createFooter(PdfWriter writer){
-        try {
-            Float x = 113f;
-            Float y = 25f;
-            Float width = widthPage-(113f*2);
-            Float height = 25f;
-            String page = ""+countPage;
-            Paragraph p = new Paragraph(page);
-            PdfPTable firstColumn = new PdfPTable(1);
-            firstColumn.setTotalWidth(new float[]{width});
-            firstColumn.addCell(createTextCell(p, height));        
-            PdfContentByte canvas = writer.getDirectContentUnder();
-            firstColumn.completeRow();
-            firstColumn.writeSelectedRows(0, -1, x, y, canvas);              
-        } catch (Exception e) {
-        }
-      
-    }                 
+    }                               
     private void createIntro(PdfWriter writer){
         try {
             Float x = mLeft;
@@ -228,62 +186,14 @@ public class PdfExport implements IPdfExportService{
             
             
             PdfPTable t1 = new PdfPTable(1);
-            t1.setTotalWidth(new float[]{width});
+            t1.setWidthPercentage(100);
             t1.addCell(createTextCell(p1, height));  
             t1.addCell(cell2);
-            PdfContentByte canvas = writer.getDirectContentUnder();
             t1.completeRow();
-            t1.writeSelectedRows(0, -1, x, y, canvas);               
+            document.add(t1);               
         } catch (Exception e) {
         }       
-    }
-    
-    private void createParagraph(PdfWriter writer){
-        try {
-            
-            IFormatoService factory  = new FormatoService();            
-            java.util.List<DetalleInforme> detalleInforme = factory.getDataInforme(1);               
-            
-            List subList1 = new List(List.ORDERED);
-            subList1.setPreSymbol(String.valueOf(1) + ".");
-            for (DetalleInforme item : detalleInforme) {
-                subList1.add(new ListItem(item.getContenido()));
-            }
-
-            RomanList list = new RomanList();
-            list.add(new ListItem("ANTECEDENTES"));
-            list.add(subList1);
-            list.add(new ListItem("BASE LEGAL"));
-            list.add(new ListItem("ANÁLISIS"));    
-            list.add(new ListItem("CONCLUSIONES"));
-            list.add(new ListItem("RECOMENDACIÓN"));
-            
-            Float x = mLeft;
-            Float y = heightPage-200f;
-            Float width = widthPage-(mLeft+ mRight);
-            Float height = 25f;               
-            document.add(list);
-            
-//            PdfPCell cell1 = new PdfPCell();    
-//            cell1.addElement(list);
-//            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-//            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);    
-//            cell1.setBackgroundColor(BaseColor.YELLOW);
-//            cell1.setBorder(Rectangle.NO_BORDER);            
-//            
-//            PdfContentByte canvas = writer.getDirectContentUnder();            
-//            
-//            PdfPTable t1 = new PdfPTable(1);
-//            t1.setTotalWidth(new float[]{width});
-//            t1.addCell(cell1);
-//            t1.completeRow();
-//            t1.setSkipFirstHeader(true);
-//            t1.writeSelectedRows(0, -1, x, y, canvas);  
-             
-        } catch (Exception e) {
-        }       
-    }    
-          
+    }                
     public PdfPCell createTextCell(Paragraph text, Float height) {
         PdfPCell cell = new PdfPCell(text);        
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -293,23 +203,134 @@ public class PdfExport implements IPdfExportService{
         cell.setBorderWidth(0);
         return cell;
     }    
-    public PdfPCell createLogoTitle(String path, Float height){
+    public PdfPCell createLogoTitle(int page){
         PdfPCell cell = new PdfPCell();
         try {
+            String path = PdfExport.class.getResource("/imagenes/onpe.png").toURI().getPath();
             Image image = Image.getInstance(path);
             cell = new PdfPCell(image);
-            cell.setFixedHeight(height);
+            cell.setFixedHeight(50f);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            if(countPage == 0){
+            if(page == 1){
                 cell.setHorizontalAlignment(Element.ALIGN_LEFT); 
             }else{
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);                 
             }
-            cell.setBackgroundColor(BaseColor.CYAN);
             cell.setBorder(Rectangle.NO_BORDER);
         } catch (Exception e) {
         }   
         return cell; 
-    }       
+    }               
+    private void createParagraph(PdfWriter writer){
+        try {
+            int count = 0;
+            
+            IFormatoService factory  = new FormatoService();  
+            java.util.List<DetalleInforme> subtitles = factory.getDataInforme(count);             
+            
+            RomanList list = new RomanList();  
+            list.setAutoindent(false);
+            list.setSymbolIndent(indent);            
+            for (DetalleInforme subtitle : subtitles) {
+                count++;
+                java.util.List<DetalleInforme> items = factory.getDataInforme(1);
+                List subList = new List(List.ORDERED);
+                subList.setAutoindent(false);
+                subList.setIndentationLeft(-indent);
+                subList.setSymbolIndent(indent); 
+                subList.setPreSymbol(String.valueOf(1) + ".");               
+                for (DetalleInforme item : items) {
+                    Paragraph paragraph = new Paragraph(item.getContenido(), getFont(item));
+                    paragraph.setSpacingBefore(spacing);
+                    paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
+                    ListItem listItem = new ListItem(paragraph);                   
+                    subList.add(listItem);
+                }                                
+                ListItem item = new ListItem(new Paragraph(subtitle.getContenido(), getFont(subtitle)));            
+                item.setSpacingAfter(spacing);  
+                item.setSpacingBefore(spacing);                  
+                list.add(item);
+                list.add(subList);
+
+            }
+
+                       
+            document.add(list);            
+             
+        } catch (Exception e) {
+        }       
+    } 
+    private Font getFont(DetalleInforme param){
+        Font font = new Font();
+        font.setSize(param.getSize());
+        if(param.isBold()){
+            font.setStyle(Font.BOLD);            
+        }
+        return font;                    
+    }
+    
+
+    public class HeaderTable extends PdfPageEventHelper {
+
+        protected float tableHeight;
+        
+        public HeaderTable() {
+
+        }
+        public float getTableHeight() {
+            return tableHeight;
+        }
+        public void onEndPage(PdfWriter writer, Document document) {
+            
+            Font f1 = new Font();
+            f1.setSize(9);
+            f1.setStyle(Font.ITALIC);            
+            Paragraph p1 = new Paragraph("\"Decenio de la Igualdad de oportunidades para mujeres y hombres\" \n \"Año del Diálogo y la Reconciliación Nacional\"", f1); 
+            
+            PdfPTable table = new PdfPTable(1);
+            table.setTotalWidth(widthPage-(mLeft+ mRight));            
+            table.addCell(createLogoTitle(document.getPageNumber()));
+            
+            PdfPCell cell = new PdfPCell(p1);        
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);       
+            cell.setBorder(Rectangle.NO_BORDER);               
+            
+            table.addCell(cell);         
+            table.writeSelectedRows(0, -1, mLeft, heightPage, writer.getDirectContent());                
+
+        }
+    }    
+    
+    public class FooterTable extends PdfPageEventHelper {
+        protected PdfPTable table;
+        protected float tableHeight;
+        
+        public FooterTable() {
+        }
+        public float getTableHeight() {
+            return tableHeight;
+        }
+        public void onEndPage(PdfWriter writer, Document document) {
+            if(document.getPageNumber() == 1){
+                          
+            }else{
+                Font f1 = new Font();
+                f1.setSize(9);                
+                Paragraph p = new Paragraph((document.getPageNumber()-1)+"", f1);
+                PdfPTable table = new PdfPTable(1);
+                table.setTotalWidth(widthPage-(mLeft+ mRight));
+                
+                PdfPCell cell = new PdfPCell(p);        
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setFixedHeight(mBot);       
+                cell.setBorderWidth(0);                
+                
+                table.addCell(cell);           
+                table.writeSelectedRows(0, -1, mLeft, mBot, writer.getDirectContent());
+            }
+        }
+    }        
     
 }

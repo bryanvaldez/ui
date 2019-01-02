@@ -11,43 +11,43 @@ package pe.gob.onpe.claridadui.model;
  */
 public class DetalleInforme {
     
-    private int id;
-    private int tipo;   
-    private int orden; 
+    private String font;
+    private int size;
+    private boolean bold;   
     private String contenido;
 
     public DetalleInforme() {
     }
 
-    public DetalleInforme(int id, int tipo, int orden, String contenido) {
-        this.id = id;
-        this.tipo = tipo;
-        this.orden = orden;
+    public DetalleInforme(String font, int size, boolean bold, String contenido) {
+        this.font = font;
+        this.size = size;
+        this.bold = bold;
         this.contenido = contenido;
     }
 
-    public int getId() {
-        return id;
+    public String getFont() {
+        return font;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setFont(String font) {
+        this.font = font;
     }
 
-    public int getTipo() {
-        return tipo;
+    public int getSize() {
+        return size;
     }
 
-    public void setTipo(int tipo) {
-        this.tipo = tipo;
+    public void setSize(int size) {
+        this.size = size;
     }
 
-    public int getOrden() {
-        return orden;
+    public boolean isBold() {
+        return bold;
     }
 
-    public void setOrden(int orden) {
-        this.orden = orden;
+    public void setBold(boolean bold) {
+        this.bold = bold;
     }
 
     public String getContenido() {
@@ -59,6 +59,4 @@ public class DetalleInforme {
     }
 
 
-    
-    
 }
