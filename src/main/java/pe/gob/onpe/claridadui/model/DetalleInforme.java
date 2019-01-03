@@ -11,6 +11,7 @@ package pe.gob.onpe.claridadui.model;
  */
 public class DetalleInforme {
     
+    private int type;    
     private String font;
     private int size;
     private boolean bold;   
@@ -19,11 +20,20 @@ public class DetalleInforme {
     public DetalleInforme() {
     }
 
-    public DetalleInforme(String font, int size, boolean bold, String contenido) {
+    public DetalleInforme(int type, String font, int size, boolean bold, String contenido) {
+        this.type = type;
         this.font = font;
         this.size = size;
         this.bold = bold;
         this.contenido = contenido;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getFont() {
