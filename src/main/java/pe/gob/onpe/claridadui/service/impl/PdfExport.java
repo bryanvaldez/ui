@@ -99,36 +99,39 @@ public class PdfExport implements IPdfExportService{
         try {
             
             IFormatoService factory  = new FormatoService();  
-            java.util.List<DetalleInforme> data = factory.getDataInforme(11);              
-                        
+            java.util.List<DetalleInforme> data = factory.getDataInforme(11);    
+                
             Float x = mLeft;
-            Float y = heightPage-100f;
+            Float y = heightPage-110f;
             Float width = widthPage-(mLeft+ mRight);
-            Float height = 25f;
-            
+
             Font f1 = new Font(FontFamily.UNDEFINED, 16, Font.BOLD);          
             Paragraph p1 = new Paragraph(data.get(0).getContenido(), f1);
-                                 
-            PdfPTable firstColumn = new PdfPTable(1);
-            firstColumn.setTotalWidth(new float[]{width});
-            firstColumn.addCell(createTextCell(p1, height));   
-            PdfContentByte canvas = writer.getDirectContentUnder();
-            firstColumn.completeRow();
-            firstColumn.writeSelectedRows(0, -1, x, y, canvas);  
-                        
-            Font f2 = new Font();
-            f2.setSize(12);
-            f2.setStyle(Font.BOLD);
-            Paragraph p2 = new Paragraph("INFORME SOBRE LAS ACTUACIONES PREVIAS AL INICIO DEL "
-                    + "PROCEDIMIENTO ADMINISTRATIVO SANCIONADOR CONTRA EL MOVIMIENTO REGIONAL \"YO SOY CALLAO\" "
-                    + "POR NO PRESENTAR LA INFORMACIÓN FINANCIERA ANUAL 2017 EN EL PLAZO ESTABLECIDO POR LEY", f2);            
+                                             
+            PdfPTable titulo = new PdfPTable(1);
+            titulo.setTotalWidth(new float[]{width});
             
-            Font f3 = new Font();
-            f3.setSize(9);
-            f3.setStyle(Font.ITALIC);
-            Paragraph p3 = new Paragraph("Jefatura del Área de Normativa y Regulación de Finanzas Partidarias \n"
-                    + "Gerencia de Supervición de Fondos Partidario \n "
-                    + "Octubre 2018", f3);            
+            PdfPCell cell1 = new PdfPCell(p1);        
+            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);      
+            cell1.setBorderWidth(Rectangle.NO_BORDER);                        
+            
+            
+            titulo.addCell(cell1);   
+            PdfContentByte canvas = writer.getDirectContentUnder();
+            titulo.completeRow();
+            titulo.writeSelectedRows(0, -1, x, y, canvas);  
+                        
+            
+            
+            
+            
+            
+            Font f2 = new Font(FontFamily.UNDEFINED, 12, Font.BOLD);
+            Paragraph p2 = new Paragraph(data.get(1).getContenido(), f2);            
+            
+            Font f3 = new Font(FontFamily.UNDEFINED, 10, Font.ITALIC);
+            Paragraph p3 = new Paragraph(data.get(2).getContenido(), f3);            
             
             
             PdfPCell cell = new PdfPCell(p2);
@@ -192,8 +195,7 @@ public class PdfExport implements IPdfExportService{
     }                          
     private void createParagraph(){
         try {
-            
-            
+                       
             
             
             
@@ -207,7 +209,7 @@ public class PdfExport implements IPdfExportService{
             list.setSymbolIndent(indent);            
             for (DetalleInforme subtitle : subtitles) {
                 count++;
-                java.util.List<DetalleInforme> items = factory.getDataInforme(1);
+                java.util.List<DetalleInforme> items = factory.getDataInforme(count);
                 List subList = new List(List.ORDERED);
                 subList.setAutoindent(false);
                 subList.setIndentationLeft(-indent);
@@ -226,14 +228,26 @@ public class PdfExport implements IPdfExportService{
                 list.add(item);
                 list.add(subList);
 
-            }
-
-                       
+            }                      
             document.add(list);            
              
         } catch (Exception e) {
         }       
     } 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     public PdfPCell createTextCell(Paragraph text, Float height) {
