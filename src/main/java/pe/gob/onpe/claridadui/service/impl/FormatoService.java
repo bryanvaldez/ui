@@ -306,6 +306,11 @@ public class FormatoService implements IFormatoService {
         
         List<DetalleInforme> p = new ArrayList<>();        
         switch (type) {
+            case 11:
+                p.add(new DetalleInforme(1,"Arial",16,true, "INFORME 0xx-2019-PAS-JANRFP-SGTN-GSFP/ONPE"));
+                p.add(new DetalleInforme(2,"Arial",12,true, "INFORME SOBRE LAS ACTUACIONES PREVIAS AL INICIO DEL PROCEDIMIENTO ADMINISTRATIVO SANCIONADOR CONTRA EL CANDIDATO “XXXXXX” POR NO PRESENTAR LA INFORMACIÓN SOBRE LAS APORTACIONES E INGRESOS RECIBIDOS Y SOBRE LOS GASTOS EFECUADOS DURANTE LA CAMPAÑA ELECTORAL EN LAS ELECCIONES REGIONALES Y MUNICIPALES 2018 EN EL PLAZO ESTABLECIDO POR LEY"));
+                p.add(new DetalleInforme(3,"Calibri",10,true, "Jefatura del Área de Normativa y Regulación de Finanzas Partidarias\n Gerencia de Supervisión de Fondos Partidarios\n Enero 2019 "));
+                break;            
             case 0:
                 p.add(new DetalleInforme(0,null,13,true, "ANTECEDENTES"));
                 p.add(new DetalleInforme(0,null,13,true, "BASE LEGAL"));

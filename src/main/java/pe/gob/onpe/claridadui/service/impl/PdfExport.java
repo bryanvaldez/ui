@@ -11,6 +11,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.List;
 import com.itextpdf.text.ListItem;
@@ -18,6 +19,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.RomanList;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -50,7 +52,7 @@ public class PdfExport implements IPdfExportService{
     public final Float indent = 30f;
     
     public int countPage = 0;    
-            
+                
     public PdfExport(String path, int candidato){
         this.path = path;
         this.candidato = candidato;
@@ -59,13 +61,17 @@ public class PdfExport implements IPdfExportService{
     @Override
     public Document export() {
         try {         
+            FontFactory.register(PdfExport.class.getResource("/fuentes/arial.ttf").toURI().getPath(), "arial");
+            
             setPage();                             
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
             
             createHeader(writer);
             createFooter(writer);
                         
-            document.open();             
+            document.open(); 
+
+            
             createIntro(writer);            
            
             createSubTitle(writer);
@@ -91,23 +97,25 @@ public class PdfExport implements IPdfExportService{
     
     private void createIntro(PdfWriter writer){
         try {
+            
+            IFormatoService factory  = new FormatoService();  
+            java.util.List<DetalleInforme> data = factory.getDataInforme(11);              
+                        
             Float x = mLeft;
             Float y = heightPage-100f;
             Float width = widthPage-(mLeft+ mRight);
             Float height = 25f;
-            Font f1 = new Font();
-            f1.setSize(16);
-            f1.setStyle(Font.BOLD);            
-            Paragraph p1 = new Paragraph("INFORME 063-2018-PAS-JANRFP-SGTN-GSFP/ONPE", f1);
             
+            Font f1 = new Font(FontFamily.UNDEFINED, 16, Font.BOLD);          
+            Paragraph p1 = new Paragraph(data.get(0).getContenido(), f1);
+                                 
             PdfPTable firstColumn = new PdfPTable(1);
             firstColumn.setTotalWidth(new float[]{width});
-            firstColumn.addCell(createTextCell(p1, height));  
+            firstColumn.addCell(createTextCell(p1, height));   
             PdfContentByte canvas = writer.getDirectContentUnder();
             firstColumn.completeRow();
             firstColumn.writeSelectedRows(0, -1, x, y, canvas);  
                         
-            //Font f2 = new Font(FontFamily.ARIAL, 12, Font.BOLD);
             Font f2 = new Font();
             f2.setSize(12);
             f2.setStyle(Font.BOLD);
@@ -237,7 +245,7 @@ public class PdfExport implements IPdfExportService{
         cell.setBorderWidth(0);
         return cell;
     }    
-    public PdfPCell createLogoTitle(int page){
+    public PdfPCell createLogoTitle(){
         PdfPCell cell = new PdfPCell();
         try {
             String path = PdfExport.class.getResource("/imagenes/logoBryan.png").toURI().getPath();
@@ -245,11 +253,7 @@ public class PdfExport implements IPdfExportService{
             cell = new PdfPCell(image);
             cell.setFixedHeight(53f);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            if(page == 1){
-                cell.setHorizontalAlignment(Element.ALIGN_LEFT); 
-            }else{
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);                 
-            }
+            cell.setHorizontalAlignment(Element.ALIGN_LEFT); 
             cell.setBorder(Rectangle.NO_BORDER);
         } catch (Exception e) {
         }   
@@ -266,32 +270,15 @@ public class PdfExport implements IPdfExportService{
     public class HeaderTable extends PdfPageEventHelper {
 
         protected float tableHeight;
+        PdfPTable header = new PdfPTable(1);
         
-        public HeaderTable() {
-
+        public HeaderTable() {            
+            header.setTotalWidth(widthPage-(mLeft+ mRight));            
+            header.addCell(createLogoTitle());                        
         }
-        public float getTableHeight() {
-            return tableHeight;
-        }
-        public void onEndPage(PdfWriter writer, Document document) {
-            
-            Font f1 = new Font();
-            f1.setSize(9);
-            f1.setStyle(Font.ITALIC);            
-            Paragraph p1 = new Paragraph("\"Decenio de la Igualdad de oportunidades para mujeres y hombres\" \n \"Año del Diálogo y la Reconciliación Nacional\"", f1); 
-            
-            PdfPTable table = new PdfPTable(1);
-            table.setTotalWidth(widthPage-(mLeft+ mRight));            
-            table.addCell(createLogoTitle(document.getPageNumber()));
-            
-            PdfPCell cell = new PdfPCell(p1);        
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);       
-            cell.setBorder(Rectangle.NO_BORDER);               
-            
-            table.addCell(cell);         
-            table.writeSelectedRows(0, -1, mLeft, heightPage, writer.getDirectContent());                
 
+        public void onEndPage(PdfWriter writer, Document document) {      
+            header.writeSelectedRows(0, -1, mLeft, heightPage-30f, writer.getDirectContent());                
         }
     }        
     public class FooterTable extends PdfPageEventHelper {
