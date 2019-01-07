@@ -305,7 +305,7 @@ public class FormatoService implements IFormatoService {
         
         String cInforme = "0xx-2019-PAS-JANRFP-SGTN-GSFP/ONPE";
         String cResolucion = "0xx-2019-PAS-JANRFP-SGTN-GSFP/ONPE";
-        String nCandidato = "Bryan Luis Valdez Jara";
+        String nCandidato = "JORGE DIAZ CASTILLO";
         String fResolucion = dateFormat.format(date);
 
         
@@ -313,6 +313,15 @@ public class FormatoService implements IFormatoService {
         
         List<DetalleInforme> p = new ArrayList<>();        
         switch (type) {
+            case 13:
+                p.add(new DetalleInforme(1,"Arial",16,true, "1 Reglamento de Financiamiento y Supervisión de Fondos Partidarios"));
+                p.add(new DetalleInforme(2,"Arial",16,true, "\"Artículo 119°.- Inicio del procedimiento"));
+                p.add(new DetalleInforme(3,"Arial",16,true, "Las acciones u omisiones referidas a eventuales infracciones sancionables de una organización política, candidato a cargo de elección popular, del promotor o de la autoridad sometida a la consulta popular de revocatoria, son evaluadas por la Gerencia para determinar si concurren las circunstancias que justifiquen el inicio del procedimiento administrativo sancionador."));
+                p.add(new DetalleInforme(4,"Arial",16,true, "Con la notificación de la resolución de la Gerencia, se da inicio al procedimiento administrativo sancionador.\""));
+                break;            
+            case 12:
+                p.add(new DetalleInforme(1,"Arial",16,true, "Lima, "+fResolucion));
+                break;              
             case 11:
                 p.add(new DetalleInforme(1,"Arial",16,true, "INFORME "+cInforme));
                 p.add(new DetalleInforme(2,"Arial",12,true, "INFORME SOBRE LAS ACTUACIONES PREVIAS AL INICIO DEL PROCEDIMIENTO ADMINISTRATIVO SANCIONADOR CONTRA EL CANDIDATO \""+nCandidato+"\" POR NO PRESENTAR LA INFORMACIÓN SOBRE LAS APORTACIONES E INGRESOS RECIBIDOS Y SOBRE LOS GASTOS EFECUADOS DURANTE LA CAMPAÑA ELECTORAL EN LAS ELECCIONES REGIONALES Y MUNICIPALES 2018 EN EL PLAZO ESTABLECIDO POR LEY"));

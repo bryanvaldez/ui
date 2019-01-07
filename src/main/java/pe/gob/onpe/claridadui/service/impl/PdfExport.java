@@ -73,10 +73,8 @@ public class PdfExport implements IPdfExportService{
             createFooter(writer);                        
             document.open(); 
             createIntro(writer);            
-           
-            
             createBody(writer);
-            createParagraph();
+
         } catch (Exception e) {            
         }        
         return document;
@@ -178,7 +176,7 @@ public class PdfExport implements IPdfExportService{
             Paragraph p1 = new Paragraph(data.get(0).getContenido(), f1);
 
             Font f2 = new Font(FontFamily.UNDEFINED, 12, Font.BOLD);
-            Paragraph p2 = new Paragraph(data.get(1).getContenido(), f2);              
+            Paragraph p2 = new Paragraph(data.get(1).getContenido(), f2);                                                 
             
             PdfPCell cell1 = new PdfPCell(p1);        
             cell1.setVerticalAlignment(Element.ALIGN_TOP);
@@ -189,7 +187,7 @@ public class PdfExport implements IPdfExportService{
             PdfPCell cell2 = new PdfPCell(p2);        
             cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell2.setFixedHeight(100f);       
+            cell2.setFixedHeight(110f);       
             cell2.setBackgroundColor(gray);
             cell2.setBorderWidth(1);          
                         
@@ -198,23 +196,10 @@ public class PdfExport implements IPdfExportService{
             t1.addCell(cell1);  
             t1.addCell(cell2);
             t1.completeRow();
-            document.add(t1);               
-        } catch (Exception e) {
-        }       
-    }      
-    
-    
-    
-    
-    private void createParagraph(){
-        try {
-                       
-            
-            
+            document.add(t1);      
             
             
             int count = 0;            
-            IFormatoService factory  = new FormatoService();  
             java.util.List<DetalleInforme> subtitles = factory.getDataInforme(count);             
             
             RomanList list = new RomanList();  
@@ -227,38 +212,37 @@ public class PdfExport implements IPdfExportService{
                 subList.setAutoindent(false);
                 subList.setIndentationLeft(-indent);
                 subList.setSymbolIndent(indent); 
-                subList.setPreSymbol(String.valueOf(1) + ".");               
+                subList.setPreSymbol(count + ".");               
                 for (DetalleInforme item : items) {
-                    Paragraph paragraph = new Paragraph(item.getContenido(), getFont(item));
-                    paragraph.setSpacingBefore(spacing);
-                    paragraph.setAlignment(Element.ALIGN_JUSTIFIED);
-                    ListItem listItem = new ListItem(paragraph);                   
+                    Font f4 = new Font(FontFamily.UNDEFINED, 11, Font.NORMAL);
+                    Paragraph p4 = new Paragraph(item.getContenido(), f4);
+                    p4.setSpacingBefore(spacing);
+                    p4.setAlignment(Element.ALIGN_JUSTIFIED);
+                    ListItem listItem = new ListItem(p4);                   
                     subList.add(listItem);
-                }                                
-                ListItem item = new ListItem(new Paragraph(subtitle.getContenido(), getFont(subtitle)));            
-                item.setSpacingAfter(spacing);  
+                }    
+                Font f3 = new Font(FontFamily.UNDEFINED, 11, Font.BOLD);
+                ListItem item = new ListItem(new Paragraph(subtitle.getContenido(), f3));            
                 item.setSpacingBefore(spacing);                  
                 list.add(item);
                 list.add(subList);
 
             }                      
-            document.add(list);            
-             
+            document.add(list);             
+            
+            java.util.List<DetalleInforme> sfin = factory.getDataInforme(12); 
+            Font f3 = new Font(FontFamily.UNDEFINED, 11, Font.NORMAL);
+            Paragraph fin = new Paragraph(sfin.get(0).getContenido() , f3); 
+            fin.setSpacingBefore(spacing);
+            fin.setAlignment(Element.ALIGN_RIGHT);            
+            document.add(fin); 
+            
         } catch (Exception e) {
         }       
-    } 
+    }      
+    
 
-    
-    
-    public PdfPCell createTextCell(Paragraph text, Float height) {
-        PdfPCell cell = new PdfPCell(text);        
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setFixedHeight(height);       
-        cell.setBackgroundColor(BaseColor.CYAN);
-        cell.setBorderWidth(0);
-        return cell;
-    }    
+
     public PdfPCell createLogoTitle(){
         PdfPCell cell = new PdfPCell();
         try {
@@ -273,19 +257,6 @@ public class PdfExport implements IPdfExportService{
         }   
         return cell; 
     }         
-    private Font getFont(DetalleInforme param){
-        Font font = new Font();
-        font.setSize(param.getSize());
-        if(param.isBold()){
-            font.setStyle(Font.BOLD);            
-        }
-        return font;                    
-    }    
-    
-    
-    
-    
-    
     private void createHeader(PdfWriter writer){
         HeaderTable event = new HeaderTable();
         writer.setPageEvent(event);                     
@@ -335,6 +306,43 @@ public class PdfExport implements IPdfExportService{
                 
                 table.addCell(cell);           
                 table.writeSelectedRows(0, -1, mLeft, mBot, writer.getDirectContent());
+                
+                
+                if(document.getPageNumber() == 6){
+                    IFormatoService factory  = new FormatoService();
+                    java.util.List<DetalleInforme> reference = factory.getDataInforme(13);
+                    PdfPTable column = new PdfPTable(3);
+                    column.setTotalWidth(widthPage-(mLeft+ mRight));
+
+                    for (int i = 1; i <= 3; i++) {                
+                        PdfPCell item = new PdfPCell();
+                        item.setFixedHeight(7f);       
+                        item.setBorderWidth(Rectangle.NO_BORDER);
+                        if(i==1){item.setBorderWidthTop(1);}           
+                        column.addCell(item);                
+                    }
+
+                    for (DetalleInforme item : reference) { 
+                        Font fi = new Font(FontFamily.UNDEFINED, 7, Font.BOLD);
+                        if(item.getType()==2){
+                            fi.setStyle(Font.BOLDITALIC);
+                        }                        
+                        if(item.getType()>2){
+                            fi.setStyle(Font.NORMAL);
+                        }
+                        Paragraph pi = new Paragraph(item.getContenido(), fi);                
+                        PdfPCell ritem = new PdfPCell(pi);
+                        ritem.setColspan(3);      
+                        if(item.getType()!=4){
+                            ritem.setPaddingTop(0f);                            
+                        }                        
+                        ritem.setBorderWidth(Rectangle.NO_BORDER);          
+                        column.addCell(ritem);                   
+                    }                   
+                    column.writeSelectedRows(0, -1, mLeft, mBot+50f, writer.getDirectContent());                    
+                }
+                
+                
             }
         }
     }        
