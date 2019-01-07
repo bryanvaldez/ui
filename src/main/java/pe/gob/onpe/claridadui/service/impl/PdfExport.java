@@ -19,6 +19,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.RomanList;
+import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -52,7 +53,11 @@ public class PdfExport implements IPdfExportService{
     public final Float indent = 30f;
     
     public int countPage = 0;    
-                
+    
+    BaseColor blue = WebColors.getRGBColor("#2e75b6");
+    BaseColor gray = WebColors.getRGBColor("#d9d9d9");
+    
+    
     public PdfExport(String path, int candidato){
         this.path = path;
         this.candidato = candidato;
@@ -61,138 +66,146 @@ public class PdfExport implements IPdfExportService{
     @Override
     public Document export() {
         try {         
-            FontFactory.register(PdfExport.class.getResource("/fuentes/arial.ttf").toURI().getPath(), "arial");
-            
+            FontFactory.register(PdfExport.class.getResource("/fuentes/arial.ttf").toURI().getPath(), "arial");            
             setPage();                             
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-            
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));            
             createHeader(writer);
-            createFooter(writer);
-                        
+            createFooter(writer);                        
             document.open(); 
-
-            
             createIntro(writer);            
            
-            createSubTitle(writer);
+            
+            createBody(writer);
             createParagraph();
         } catch (Exception e) {            
         }        
         return document;
     }        
     
-    private void createHeader(PdfWriter writer){
-        HeaderTable event = new HeaderTable();
-        writer.setPageEvent(event);                     
-    }            
-    private void createFooter(PdfWriter writer){
-        FooterTable event = new FooterTable();
-        writer.setPageEvent(event);         
-    }          
-    private void setPage() { 
-        Rectangle size = new Rectangle(widthPage, heightPage); 
-        document.setPageSize(size);                 
-        document.setMargins(mLeft, mRight, mTop, mBot);
-    }                          
+                    
     
     private void createIntro(PdfWriter writer){
         try {
-            
+            PdfContentByte canvas = writer.getDirectContentUnder();            
             IFormatoService factory  = new FormatoService();  
             java.util.List<DetalleInforme> data = factory.getDataInforme(11);    
                 
-            Float x = mLeft;
-            Float y = heightPage-110f;
             Float width = widthPage-(mLeft+ mRight);
-
+            
             Font f1 = new Font(FontFamily.UNDEFINED, 16, Font.BOLD);          
             Paragraph p1 = new Paragraph(data.get(0).getContenido(), f1);
-                                             
-            PdfPTable titulo = new PdfPTable(1);
-            titulo.setTotalWidth(new float[]{width});
-            
-            PdfPCell cell1 = new PdfPCell(p1);        
-            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);      
-            cell1.setBorderWidth(Rectangle.NO_BORDER);                        
-            
-            
-            titulo.addCell(cell1);   
-            PdfContentByte canvas = writer.getDirectContentUnder();
-            titulo.completeRow();
-            titulo.writeSelectedRows(0, -1, x, y, canvas);  
-                        
-            
-            
-            
-            
-            
+                    
             Font f2 = new Font(FontFamily.UNDEFINED, 12, Font.BOLD);
             Paragraph p2 = new Paragraph(data.get(1).getContenido(), f2);            
             
             Font f3 = new Font(FontFamily.UNDEFINED, 10, Font.ITALIC);
-            Paragraph p3 = new Paragraph(data.get(2).getContenido(), f3);            
+            Paragraph p3 = new Paragraph(data.get(2).getContenido(), f3);                
             
+            PdfPCell cell1 = new PdfPCell(p1);        
+            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);      
+            cell1.setBorderWidth(Rectangle.NO_BORDER);              
             
-            PdfPCell cell = new PdfPCell(p2);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-            cell.setFixedHeight(100F);       
-            cell.setBackgroundColor(BaseColor.GREEN);
-            cell.setBorderWidth(0);     
+            PdfPCell cell2 = new PdfPCell(p2);
+            cell2.setVerticalAlignment(Element.ALIGN_TOP);
+            cell2.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+            cell2.setFixedHeight(100F);       
+            cell2.setBorderWidth(Rectangle.NO_BORDER);     
             
             PdfPCell cell3 = new PdfPCell(p3);
-            cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell3.setVerticalAlignment(Element.ALIGN_BOTTOM);
             cell3.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell3.setFixedHeight(50F);       
-            cell3.setBackgroundColor(BaseColor.GREEN);
-            cell3.setBorderWidth(0);                   
+            cell3.setFixedHeight(60F);       
+            cell3.setBorderWidth(Rectangle.NO_BORDER);      
+            
+            PdfPCell cell4 = new PdfPCell();
+            cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell4.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell4.setFixedHeight(heightPage-(120f));       
+            cell4.setBorderWidth(Rectangle.NO_BORDER);   
+            cell4.setBackgroundColor(blue);
+            
+            PdfPCell cell5 = new PdfPCell();
+            cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell5.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell5.setFixedHeight(15f);       
+            cell5.setBorderWidth(Rectangle.NO_BORDER);   
+
+            PdfPCell cell6 = new PdfPCell();
+            cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell6.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell6.setFixedHeight(20f);       
+            cell6.setBorderWidth(Rectangle.NO_BORDER);   
+            cell6.setBackgroundColor(blue);            
                         
-            PdfPTable textBot = new PdfPTable(1);
-            textBot.setTotalWidth(new float[]{width});                     
-            textBot.addCell(cell);  
-            textBot.addCell(cell3);
-            textBot.completeRow();
-            textBot.writeSelectedRows(0, -1, x, mBot+150F, canvas);       
+            PdfPTable bloque1 = new PdfPTable(1);
+            bloque1.setTotalWidth(new float[]{width});
+            bloque1.addCell(cell1);   
+            bloque1.completeRow();
+            bloque1.writeSelectedRows(0, -1, mLeft, heightPage-110f, canvas);  
+                        
+            PdfPTable bloque2 = new PdfPTable(1);
+            bloque2.setTotalWidth(new float[]{width});                     
+            bloque2.addCell(cell2);  
+            bloque2.addCell(cell3);
+            bloque2.completeRow();
+            bloque2.writeSelectedRows(0, -1, mLeft, mBot+150F, canvas);     
+            
+            PdfPTable bloque3 = new PdfPTable(1);
+            bloque3.setTotalWidth(new float[]{20f});                     
+            bloque3.addCell(cell4);  
+            bloque3.addCell(cell5);
+            bloque3.addCell(cell6);
+            bloque3.completeRow();
+            bloque3.writeSelectedRows(0, -1, mLeft-50f, heightPage-30f, canvas);  
 
             document.newPage();            
             
         } catch (Exception e) {
         }           
     }   
-    private void createSubTitle(PdfWriter writer){
+    
+    private void createBody(PdfWriter writer){
         try {
-            Float x = mLeft;
+            IFormatoService factory  = new FormatoService();
+            java.util.List<DetalleInforme> data = factory.getDataInforme(11);
+            
+            
             Float y = heightPage-100f;
             Float height = 25f;    
             
-            Font f1 = new Font();
-            f1.setSize(14);
-            f1.setStyle(Font.BOLD); 
-            Paragraph p1 = new Paragraph("INFORME 063-2018-PAS-JANRFP-SGTN-GSFP/ONPE", f1);
+            Font f1 = new Font(FontFamily.UNDEFINED, 14, Font.BOLD);
+            Paragraph p1 = new Paragraph(data.get(0).getContenido(), f1);
 
-            Font f2 = new Font();
-            f2.setSize(14);
-            f2.setStyle(Font.NORMAL); 
-            Paragraph p2 = new Paragraph("INFORME SOBRE LAS ACTUACIONES PREVIAS AL INICIO DEL PROCEDIMIENTO ADMINISTRATIVO"
-                    + " SANCIONADOR CONTRA EL MOVIMIENTO REGIONAL \"YO SOY CALLAO\" POR NO PRESENTAR LA INFORMACIÓN FINANCIERA ANUAL 2017"
-                    + " EN EL PLAZO ESTABLECIDO POR LEY", f2);                        
+            Font f2 = new Font(FontFamily.UNDEFINED, 12, Font.BOLD);
+            Paragraph p2 = new Paragraph(data.get(1).getContenido(), f2);              
+            
+            PdfPCell cell1 = new PdfPCell(p1);        
+            cell1.setVerticalAlignment(Element.ALIGN_TOP);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setFixedHeight(height);       
+            cell1.setBorderWidth(Rectangle.NO_BORDER);                
+            
             PdfPCell cell2 = new PdfPCell(p2);        
             cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell2.setFixedHeight(100f);       
-            cell2.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            cell2.setBackgroundColor(gray);
             cell2.setBorderWidth(1);          
                         
             PdfPTable t1 = new PdfPTable(1);
             t1.setWidthPercentage(100);
-            t1.addCell(createTextCell(p1, height));  
+            t1.addCell(cell1);  
             t1.addCell(cell2);
             t1.completeRow();
             document.add(t1);               
         } catch (Exception e) {
         }       
-    }                          
+    }      
+    
+    
+    
+    
     private void createParagraph(){
         try {
                        
@@ -234,20 +247,7 @@ public class PdfExport implements IPdfExportService{
         } catch (Exception e) {
         }       
     } 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     
     public PdfPCell createTextCell(Paragraph text, Float height) {
@@ -281,6 +281,19 @@ public class PdfExport implements IPdfExportService{
         }
         return font;                    
     }    
+    
+    
+    
+    
+    
+    private void createHeader(PdfWriter writer){
+        HeaderTable event = new HeaderTable();
+        writer.setPageEvent(event);                     
+    }            
+    private void createFooter(PdfWriter writer){
+        FooterTable event = new FooterTable();
+        writer.setPageEvent(event);         
+    }                      
     public class HeaderTable extends PdfPageEventHelper {
 
         protected float tableHeight;
@@ -325,5 +338,9 @@ public class PdfExport implements IPdfExportService{
             }
         }
     }        
-    
+    private void setPage() { 
+        Rectangle size = new Rectangle(widthPage, heightPage); 
+        document.setPageSize(size);                 
+        document.setMargins(mLeft, mRight, mTop, mBot);
+    }      
 }
