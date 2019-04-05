@@ -48,5 +48,7 @@ public class Mensajes {
         
     public static final String I_TIPOGASTO = "Los valores permitidos son del 1 al 5, según la descripcion.";
     public static final String I_TIPODOC = "Los valores permitidos son del 1 al 3, según la descripcion.";
+
+    /** TEST**/
         
 }
